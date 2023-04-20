@@ -9,7 +9,10 @@
 <html>
 <head>
 	<title>Signup Page</title>
-	<link rel="stylesheet" href="${contextPath}/resources/style.css" type = "text/css">
+	<link rel="stylesheet" href="${contextPath}/resources/style2.css" type = "text/css">
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
 </head>
 
 <body>
@@ -18,7 +21,7 @@
 					<h1>ShopFinity</h1>
 			</header>
 		</a>
-	<div class="container_s">
+	<div class="container">
 		
 			<h1>Sign up</h1>
 			<%
@@ -30,13 +33,11 @@
 			%>
 			
 			<form action = "validate.jsp" method = "post">
-				<input type="text" id="fullname" name="full_name" placeholder="Full Name" required>
-	
-				<input type="email" id="email" name="email_id" placeholder="Email" required>
-	
-				<input type="tel" id="mobile" name="ph_no" placeholder="Mobile Number" required>
-	
-				<input type="password" id="password" name="passwd" placeholder="Password" required>  
+				<input class="input-field" type="text" id="fullname" name="full_name" placeholder="Full Name" required>
+				<input class="input-field" type="email" id="email" name="email_id" placeholder="Email" required>
+				<input class="input-field" type="tel" id="mobile" name="ph_no" placeholder="Mobile Number" required>
+				<input class="input-field" type="password" id="password" name="passwd" placeholder="Password" required>
+ 
 	
 	      		<span id="password-requirements"></span>  
 	

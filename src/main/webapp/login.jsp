@@ -8,7 +8,10 @@
 <html> 
 <head>
 	<title>Login Page</title>
-	<link rel="stylesheet" href="${contextPath}/resources/style.css" type = "text/css"> 
+	<link rel="stylesheet" href="${contextPath}/resources/style2.css" type = "text/css">
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
 </head>
 <body>
 		<%
@@ -24,6 +27,7 @@
 		        }
 		    }
 		%>
+		<div class="main">
 		<header>
 			<a href="index.jsp">
 				<h1>ShopFinity</h1>
@@ -54,9 +58,8 @@
 			%>
 			<% if (session1.getAttribute("loggedIn") == null || (Boolean) session1.getAttribute("loggedIn") == false) { %>
 			<form action = "loginvalidate.jsp" method = "post">
-				<input type="email" id="email" name="email" placeholder="Enter your email" required>
-	
-				<input type="password" id="password" name="password" placeholder="Enter your password" required>
+				<input class="input-field" type="email" id="email" name="email" placeholder="Enter your email" required>
+				<input class="input-field" type="password" id="password" name="password" placeholder="Enter your password" required>
 	
 				<a href="signup.jsp">Don't have an account? Create One.</a>
 	
@@ -65,6 +68,7 @@
 			<% } else { %>
 			<div class="message"> You are already signed in!</div>
 			<% } %>
+		</div>
 		</div>
 	</body> 
 </html>

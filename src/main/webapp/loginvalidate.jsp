@@ -12,7 +12,7 @@
 	ResultSet rs = null;
 	Statement statement = null;
 	Class.forName("com.mysql.jdbc.Driver");
-	connection = DriverManager.getConnection(connectionURL, "root", "<YOUR PASSWORD HERE>");
+	connection = DriverManager.getConnection(connectionURL, "root", "password");
 	statement = connection.createStatement();
 	String query = "SELECT * FROM EndUsers WHERE email_id='" + email + "' AND passwd='" + password + "'";
 	rs = statement.executeQuery(query);

@@ -83,6 +83,14 @@ input[type="text"], input[type="email"], input[type="tel"], input[type="password
     transition: border-bottom-color 0.3s ease;
 }
 
+.input-field {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+}
+
 /* Style for the placeholder text */
 ::-webkit-input-placeholder {
     color: #999;
@@ -154,4 +162,11 @@ input[type="submit"]:hover {
 div.message {
     color: red;
     font-size: large;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="tel"],
+input[type="password"] {
+    width: 100%;
 }
