@@ -8,7 +8,10 @@
 <html> 
 <head>
 	<title>Index</title>
-	<link rel="stylesheet" href="${contextPath}/resources/style.css" type = "text/css"> 
+	<link rel="stylesheet" href="${contextPath}/resources/style2.css" type = "text/css"> 
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
 </head>
 <body>
 		<%
@@ -28,11 +31,18 @@
 			<a href="index.jsp">
 				<h1>ShopFinity</h1>
 			</a>
+			<span style="float:right;">
 				<% if (session1.getAttribute("loggedIn") != null && (Boolean) session1.getAttribute("loggedIn")) { %>
 			<a href = "logout.jsp">
-				<span style="float:right;">Sign Out</span>
+				Sign Out
 			</a>
-			<% } %>
+			<% } 
+				else {%>
+				<a href = "login.jsp">
+					<span style="float:right;">Log In</span>
+				</a>
+			<%} %>
+			</span>
 		</header>
 	<%
 		
@@ -42,6 +52,5 @@
 	        out.println("<div class=\"message\">" + loginMessage + "</div>");
 	    }
 	%>
-<a href = "login.jsp">JSP</a>
 </body> 
 </html>
