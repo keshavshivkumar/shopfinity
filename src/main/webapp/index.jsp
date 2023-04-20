@@ -39,7 +39,7 @@
 			<% } 
 				else {%>
 				<a href = "login.jsp">
-					<span style="float:right;">Log In</span>
+					Log In
 				</a>
 			<%} %>
 			</span>

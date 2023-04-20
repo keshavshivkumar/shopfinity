@@ -21,7 +21,7 @@
 					<h1>ShopFinity</h1>
 			</header>
 		</a>
-	<div class="container_s">
+	<div class="container">
 		
 			<h1>Sign up</h1>
 			<%
