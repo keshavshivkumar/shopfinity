@@ -57,7 +57,8 @@
 	    <input type="text" id="search-input" placeholder="Search..." onkeyup="searchFunction()">
 	    <ul id="search-results" class="search-results"></ul>
 	</div>
-
+	
 	<% } %>
+<script src="${contextPath}/resources/searchbar.js"></script>
 </body> 
 </html>
