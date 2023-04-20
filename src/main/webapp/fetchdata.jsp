@@ -21,10 +21,20 @@
 
         ResultSet rs = stmt.executeQuery();
 
+        out.println("<table class=\"results-table\">");
+        out.println("<thead>");
+        out.println("<tr><th>Vehicle Name</th><th>Seller ID</th><th>Listing Price</th></tr>");
+        out.println("</thead>");
+        out.println("<tbody>");
+
         while (rs.next()) {
-            out.println(rs.getString("vehicle_name")+ " - " + rs.getString("seller_id") + " - " + rs.getString("listing_price"));
-            out.println("<br>");
+            out.println("<tr><td>" + rs.getString("vehicle_name") + "</td><td>" + rs.getString("seller_id") + "</td><td>" + rs.getString("listing_price") + "</td></tr>");
         }
+
+        out.println("</tbody>");
+        out.println("</table>");
+
+        con.close();
 
         con.close();
     } catch (Exception e) {

@@ -33,9 +33,12 @@
 			</a>
 			<div class="nav-container">
 				<% if (session1.getAttribute("loggedIn") != null && (Boolean) session1.getAttribute("loggedIn")) { %>
-			<a style="left:150px;" href = "logout.jsp">
-				Sign Out
-			</a>
+			<a href = "sell.jsp">
+            Sell
+            </a>
+            <a href = "logout.jsp">
+                Sign Out
+            </a>
 			<% } 
 				else {%>
 				<a href = "login.jsp">
@@ -45,17 +48,19 @@
 			</div>
 		</header>
 	<%
-		
 		String loginMessage = "";
-		loginMessage = (String) session1.getAttribute("loginMessage");
+	    loginMessage = (String) session1.getAttribute("loginMessage");
 	    if (loginMessage != null) {
 	        out.println("<div class=\"message\">" + loginMessage + "</div>");
+	        session1.setAttribute("loginMessage", null);
 	    }
 	%>
 	<% if (session1.getAttribute("loggedIn") != null && (Boolean) session1.getAttribute("loggedIn")) { %>
 	<div class="search-container">
 	    <input type="text" id="search-input" placeholder="Search..." onkeyup="searchFunction()">
+	    <div class="results-container">
 	    <ul id="search-results" class="search-results"></ul>
+	    </div>
 	</div>
 	
 	<% } %>

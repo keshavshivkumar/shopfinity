@@ -135,9 +135,10 @@ form input[type="submit"]:hover {
 }
 
 .search-container {
+    position: relative;
+    display: block;
+    justify-content: center;
     width: 100%;
-    max-width: 400px;
-    margin: 50px auto;
 }
 
 #search-input {
@@ -161,3 +162,46 @@ form input[type="submit"]:hover {
     border-radius: 3px;
     margin-bottom: 10px;
 }
+
+.results-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.results-table thead {
+    background-color: #f2f2f2;
+}
+
+.results-table th,
+.results-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+
+.results-table tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+.results-table tr:hover {
+    background-color: #ddd;
+}
+
+.results-table th {
+    padding-top: 12px;
+    padding-bottom: 12px;
+    font-weight: bold;
+}
+
+.results-container {
+    width: 100%;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.results-container table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: beige;
+  }
+  
