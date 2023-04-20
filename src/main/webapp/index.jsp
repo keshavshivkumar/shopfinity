@@ -31,9 +31,9 @@
 			<a href="index.jsp">
 				<h1>ShopFinity</h1>
 			</a>
-			<span style="float:right;">
+			<div class="nav-container">
 				<% if (session1.getAttribute("loggedIn") != null && (Boolean) session1.getAttribute("loggedIn")) { %>
-			<a href = "logout.jsp">
+			<a style="left:150px;" href = "logout.jsp">
 				Sign Out
 			</a>
 			<% } 
@@ -42,7 +42,7 @@
 					Log In
 				</a>
 			<%} %>
-			</span>
+			</div>
 		</header>
 	<%
 		
@@ -52,5 +52,12 @@
 	        out.println("<div class=\"message\">" + loginMessage + "</div>");
 	    }
 	%>
+	<% if (session1.getAttribute("loggedIn") != null && (Boolean) session1.getAttribute("loggedIn")) { %>
+	<div class="search-container">
+	    <input type="text" id="search-input" placeholder="Search..." onkeyup="searchFunction()">
+	    <ul id="search-results" class="search-results"></ul>
+	</div>
+
+	<% } %>
 </body> 
 </html>

@@ -28,10 +28,11 @@
 		    }
 		%>
 		<div class="main">
-		<header>
+		<header style="postion:fixed;left:20px;">
 			<a href="index.jsp">
 				<h1>ShopFinity</h1>
 			</a>
+			
 			<% if (session1.getAttribute("loggedIn") != null && (Boolean) session1.getAttribute("loggedIn")) { %>
 			<a href = "logout.jsp">
 				<span style="float:right;">Sign Out</span>

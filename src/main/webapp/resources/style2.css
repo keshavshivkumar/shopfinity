@@ -11,21 +11,30 @@ body {
 header {
     background-color: #4caf50;
     padding: 20px;
-    text-align: center;
     color: white;
-}
-
-header a {
-    text-decoration: none;
-    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
 }
 
 header h1 {
-    display: inline;
-    margin-right: 50px;
     font-size: 24px;
     font-weight: 700;
-    vertical-align: middle;
+    margin: 0;
+}
+
+header .nav-container {
+    display: flex;
+    justify-content: space-around;
+}
+
+header .nav-container a {
+    font-size: 16px;
+    font-weight: 400;
+    margin-left: 10px;
+    color: white;
+    text-decoration: none;
 }
 
 span {
@@ -123,4 +132,32 @@ form input[type="submit"]:hover {
 
 .footer {
     flex-shrink: 0;
+}
+
+.search-container {
+    width: 100%;
+    max-width: 400px;
+    margin: 50px auto;
+}
+
+#search-input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+}
+
+.search-results {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.search-results li {
+    padding: 10px;
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    margin-bottom: 10px;
 }
