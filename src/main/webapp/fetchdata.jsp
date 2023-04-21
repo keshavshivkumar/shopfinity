@@ -11,7 +11,7 @@
 
         String connectionURL = "jdbc:mysql://localhost:3306/shopfinity";
         String username = "root";
-        String password = "mutexlock";
+        String password = "qwertyuiop1@@1";
 
         Class.forName("com.mysql.jdbc.Driver");
         Connection con = DriverManager.getConnection(connectionURL, username, password);

@@ -25,6 +25,7 @@
 		<div class = "signup">Successfully logged out!</div>
 		<%
 		    session1.setAttribute("loggedIn", false);
+			session1.setAttribute("user", null);
 		response.sendRedirect("login.jsp");
 		%>
 </body> 
