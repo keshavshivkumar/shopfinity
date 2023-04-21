@@ -56,13 +56,12 @@
 	    }
 	%>
 	<% if (session1.getAttribute("loggedIn") != null && (Boolean) session1.getAttribute("loggedIn")) { %>
-	<div class="search-container">
-	    <input type="text" id="search-input" placeholder="Search..." onkeyup="searchFunction()">
-	    <div class="results-container">
-	    <ul id="search-results" class="search-results"></ul>
-	    </div>
-	</div>
-	
+	  <div class="wrapper">
+	  	<div class="search-container">
+	      <input type="text" id="search-input" placeholder="Search..." onkeyup="searchFunction()">
+	      </div>
+	      <ul id="search-results" class="search-results"></ul>
+	  </div>
 	<% } %>
 <script src="${contextPath}/resources/searchbar.js"></script>
 </body> 

@@ -6,6 +6,8 @@ body {
     min-height: 100vh;
     display: flex;
     flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 
 header {
@@ -134,10 +136,22 @@ form input[type="submit"]:hover {
     flex-shrink: 0;
 }
 
+.wrapper {
+    width: 80%;
+}
+
+.main-container {
+    width: 80%;
+    margin: 0 auto;
+}
+  
 .search-container {
     position: relative;
     display: block;
-    justify-content: center;
+    width: 100%;
+}
+
+.results-container {
     width: 100%;
 }
 
@@ -149,59 +163,18 @@ form input[type="submit"]:hover {
     border-radius: 3px;
 }
 
-.search-results {
-    list-style-type: none;
-    padding: 0;
-    margin: 0;
-}
-
-.search-results li {
-    padding: 10px;
-    background-color: white;
-    border: 1px solid #ccc;
-    border-radius: 3px;
-    margin-bottom: 10px;
-}
-
-.results-table {
-    width: 100%;
-    border-collapse: collapse;
-}
-
-.results-table thead {
-    background-color: #f2f2f2;
-}
-
-.results-table th,
-.results-table td {
-    border: 1px solid #ddd;
-    padding: 8px;
-    text-align: left;
-}
-
-.results-table tr:nth-child(even) {
-    background-color: #f2f2f2;
-}
-
-.results-table tr:hover {
-    background-color: #ddd;
-}
-
-.results-table th {
-    padding-top: 12px;
-    padding-bottom: 12px;
-    font-weight: bold;
-}
-
 .results-container {
-    width: 100%;
+    width: 80%; /* Update this line */
     margin: 0 auto;
     text-align: center;
 }
 
-.results-container table {
+.search-results {
+    list-style-type: lower-greek;
+    padding: 0;
+    margin: 0;
+    width: 100%; /* Add this line */
+}
+.results-table {
     width: 100%;
-    border-collapse: collapse;
-    background-color: beige;
-  }
-  
+}
