@@ -16,7 +16,6 @@
 <body>
 		<%
 		HttpSession session1 = request.getSession();
-        out.println(session1.getAttribute("loggedIn"));
 		String listed = request.getParameter("listed");
 		%>
         <script>
