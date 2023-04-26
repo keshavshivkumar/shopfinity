@@ -28,22 +28,28 @@
             alert("Vehicle listed successfully");
         }
     </script>
-    <header class="bg-light py-3">
-        <div class="container">
-            <div class="d-flex justify-content-between align-items-center">
-                <a href="index.jsp" class="text-decoration-none">
-                    <h1 class="text-dark">ShopFinity</h1>
-                </a>
-                <nav class="nav">
-                    <% if (session1.getAttribute("loggedIn") != null && (Boolean) session1.getAttribute("loggedIn")) { %>
-                        <a href="logout.jsp" class="nav-link">Sign Out</a>
-                    <% } else { %>
-                        <a href="login.jsp" class="nav-link">Log In</a>
-                    <% } %>
-                </nav>
-            </div>
-        </div>
-    </header>
+    <header class="navbar navbar-expand-lg navbar-dark bg-primary py-3">
+    <div class="container">
+        <a href="index.jsp" class="navbar-brand text-decoration-none">
+            <h1 class="text-white">ShopFinity</h1>
+        </a>
+        <nav class="navbar-nav ms-auto">
+            <% if (session1.getAttribute("loggedIn") != null && (Boolean) session1.getAttribute("loggedIn")) { %>
+                <li class="nav-item">
+                    <a href="sell.jsp" class="nav-link">Sell</a>
+                </li>
+                <li class="nav-item">
+                    <a href="logout.jsp" class="nav-link">Sign Out</a>
+                </li>
+            <% } else { %>
+                <li class="nav-item">
+                    <a href="login.jsp" class="nav-link">Log In</a>
+                </li>
+            <% } %>
+        </nav>
+    </div>
+</header>
+
 
     <div class="container">
         <% if (session1.getAttribute("loggedIn") != null && (Boolean) session1.getAttribute("loggedIn")) { %>

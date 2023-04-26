@@ -13,6 +13,7 @@
 	<link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+	
 </head>
 <body>
 	<%
@@ -28,23 +29,32 @@
 	        }
 	    }
 		%>
-		<header class="bg-light py-3">
-			<div class="container">
-				<div class="d-flex justify-content-between align-items-center">
-					<a href="index.jsp" class="text-decoration-none">
-						<h1 class="text-dark">ShopFinity</h1>
-					</a>
-					<nav class="nav">
-						<% if (session1.getAttribute("loggedIn") != null && (Boolean) session1.getAttribute("loggedIn")) { %>
-						<a href="sell.jsp" class="nav-link">Sell</a>
-						<a href="logout.jsp" class="nav-link">Sign Out</a>
-						<% } else { %>
-						<a href="login.jsp" class="nav-link">Log In</a>
-						<% } %>
-					</nav>
-				</div>
-			</div>
-		</header>
+		<header class="navbar navbar-expand-lg navbar-dark bg-primary py-3">
+        <div class="container">
+            <a href="index.jsp" class="navbar-brand text-decoration-none">
+                <h1 class="text-white">ShopFinity</h1>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <% if (session1.getAttribute("loggedIn") != null && (Boolean) session1.getAttribute("loggedIn")) { %>
+                        <li class="nav-item">
+                            <a href="sell.jsp" class="nav-link">Sell</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="logout.jsp" class="nav-link">Sign Out</a>
+                        </li>
+                    <% } else { %>
+                        <li class="nav-item">
+                            <a href="login.jsp" class="nav-link">Log In</a>
+                        </li>
+                    <% } %>
+                </ul>
+            </div>
+        </div>
+    </header>
 	<%
 		String loginMessage = "";
 	    loginMessage = (String) session1.getAttribute("loginMessage");

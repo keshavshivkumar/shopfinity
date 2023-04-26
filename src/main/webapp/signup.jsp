@@ -17,15 +17,16 @@
 </head>
 
 <body>
-    <header class="bg-light py-3">
-        <div class="container">
-            <div class="d-flex justify-content-center">
-                <a href="index.jsp" class="text-decoration-none">
-                    <h1 class="text-dark">ShopFinity</h1>
-                </a>
-            </div>
+    <header class="navbar navbar-expand-lg navbar-dark bg-primary py-3">
+    <div class="container">
+        <div class="d-flex justify-content-center">
+            <a href="index.jsp" class="navbar-brand text-decoration-none">
+                <h1 class="text-white">ShopFinity</h1>
+            </a>
         </div>
-    </header>
+    </div>
+</header>
+
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-md-6">

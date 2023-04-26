@@ -29,14 +29,21 @@
 		    }
 		%>
 		<div class="container">
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <a class="navbar-brand" href="index.jsp">
-        <h1>ShopFinity</h1>
-    </a>
-    <% if (session1.getAttribute("loggedIn") != null && (Boolean) session1.getAttribute("loggedIn")) { %>
-        <a class="nav-link" href="logout.jsp" style="float:right;">Sign Out</a>
-    <% } %>
-</nav>
+    <header class="navbar navbar-expand-lg navbar-dark bg-primary py-3">
+    <div class="container">
+        <a href="index.jsp" class="navbar-brand text-decoration-none">
+            <h1 class="text-white">ShopFinity</h1>
+        </a>
+        <% if (session1.getAttribute("loggedIn") != null && (Boolean) session1.getAttribute("loggedIn")) { %>
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a href="logout.jsp" class="nav-link">Sign Out</a>
+                </li>
+            </ul>
+        <% } %>
+    </div>
+</header>
+
 
 
     <div class="row justify-content-center">
