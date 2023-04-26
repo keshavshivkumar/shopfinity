@@ -1,0 +1,7 @@
+
+/build/
+src/main/webapp/loginvalidate.jsp
+src/main/webapp/validate.jsp
+.metadata/
+.classpath
+/bin/

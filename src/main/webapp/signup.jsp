@@ -9,48 +9,74 @@
 <html>
 <head>
 	<title>Signup Page</title>
-	<link rel="stylesheet" href="${contextPath}/resources/style2.css" type = "text/css">
+	<link href="bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+	<script type="text/javascript" src="bootstrap/js/bootstrap.min.js"></script>
 	<link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
 </head>
 
 <body>
-	<a href="index.jsp">
-			<header>
-					<h1>ShopFinity</h1>
-			</header>
-		</a>
-	<div class="container">
-		
-			<h1>Sign up</h1>
-			<%
-				String error = request.getParameter("error");
-				
-				if (error != null && error.equals("invalid")) {
-				    out.println("<div class=\"message\">Invalid email or password! </div>");
-				}
-			%>
-			
-			<form action = "validate.jsp" method = "post">
-				<input class="input-field" type="text" id="fullname" name="full_name" placeholder="Full Name" required>
-				<input class="input-field" type="email" id="email" name="email_id" placeholder="Email" required>
-				<input class="input-field" type="tel" id="mobile" name="ph_no" placeholder="Mobile Number" required>
-				<input class="input-field" type="password" id="password" name="passwd" placeholder="Password" required>
- 
-	
-	      		<span id="password-requirements"></span>  
-	
-				<label for="show-password">
-					<input type="checkbox" id="show-password">
-					Show Password
-				</label>
-	
-	      		<a href="login.jsp">Already have an account? Login.</a>
-		
-				<input type="submit" value="Sign up">
-			</form>
-	</div>
-  <script src="${contextPath}/resources/functionality.js"></script>
+    <header class="bg-light py-3">
+        <div class="container">
+            <div class="d-flex justify-content-center">
+                <a href="index.jsp" class="text-decoration-none">
+                    <h1 class="text-dark">ShopFinity</h1>
+                </a>
+            </div>
+        </div>
+    </header>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card mt-4">
+                    <div class="card-body">
+                        <h1 class="card-title text-center">Sign up</h1>
+                        <hr>
+                        <%
+                            String error = request.getParameter("error");
+
+                            if (error != null && error.equals("invalid")) {
+                                out.println("<div class=\"alert alert-danger\">Invalid email or password!</div>");
+                            }
+                        %>
+                        <form action="validate.jsp" method="post">
+                            <div class="form-group">
+                                <input class="form-control" type="text" id="fullname" name="full_name" placeholder="Full Name" required>
+                            </div>
+                            <div class="form-group">
+                                <input class="form-control" type="email" id="email" name="email_id" placeholder="Email" required>
+                            </div>
+                            <div class="form-group">
+                                <input class="form-control" type="tel" id="mobile" name="ph_no" placeholder="Mobile Number" required>
+                            </div>
+                            <div class="form-group">
+                                <input class="form-control" type="password" id="password" name="passwd" placeholder="Password" required>
+                            </div>
+
+                            <span id="password-requirements"></span>
+
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="show-password">
+                                <label class="form-check-label" for="show-password">
+                                    Show Password
+                                </label>
+                            </div>
+
+                            <div class="mt-3">
+                                <a href="login.jsp">Already have an account? Login.</a>
+                            </div>
+
+                            <div class="text-center mt-3">
+                                <input type="submit" value="Sign up" class="btn btn-primary">
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="${contextPath}/resources/functionality.js"></script>
 </body>
+
 </html>

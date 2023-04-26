@@ -6,7 +6,7 @@
 	// Get the form data
 	String full_name = request.getParameter("full_name");
 	String email = request.getParameter("email_id");
-	int ph_no = Integer.parseInt(request.getParameter("ph_no"));
+	long ph_no = Long.parseLong(request.getParameter("ph_no"));
 	String passwd = request.getParameter("passwd");
 	try{
 		HttpSession session1 = request.getSession();
@@ -21,7 +21,7 @@
 		PreparedStatement ps = conn.prepareStatement(query);
 		ps.setString(1, full_name);
 		ps.setString(2, email);
-		ps.setInt(3, ph_no);
+		ps.setLong(3, ph_no);
 		ps.setString(4, passwd);
 		
 		// Execute the query

@@ -8,13 +8,14 @@
 <html> 
 <head>
 	<title>Index</title>
-	<link rel="stylesheet" href="${contextPath}/resources/style2.css" type = "text/css"> 
+	<link href="bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+	<script type="text/javascript" src="bootstrap/js/bootstrap.min.js"></script>
 	<link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
 </head>
 <body>
-		<%
+	<%
 		HttpSession session1 = request.getSession();
 		String login = request.getParameter("login");
 		if (login != null && login.equals("success")) {
@@ -27,40 +28,38 @@
 	        }
 	    }
 		%>
-		<header>
-			<a href="index.jsp">
-				<h1>ShopFinity</h1>
-			</a>
-			<div class="nav-container">
-				<% if (session1.getAttribute("loggedIn") != null && (Boolean) session1.getAttribute("loggedIn")) { %>
-			<a href = "sell.jsp">
-            Sell
-            </a>
-            <a href = "logout.jsp">
-                Sign Out
-            </a>
-			<% } 
-				else {%>
-				<a href = "login.jsp">
-					Log In
-				</a>
-			<%} %>
+		<header class="bg-light py-3">
+			<div class="container">
+				<div class="d-flex justify-content-between align-items-center">
+					<a href="index.jsp" class="text-decoration-none">
+						<h1 class="text-dark">ShopFinity</h1>
+					</a>
+					<nav class="nav">
+						<% if (session1.getAttribute("loggedIn") != null && (Boolean) session1.getAttribute("loggedIn")) { %>
+						<a href="sell.jsp" class="nav-link">Sell</a>
+						<a href="logout.jsp" class="nav-link">Sign Out</a>
+						<% } else { %>
+						<a href="login.jsp" class="nav-link">Log In</a>
+						<% } %>
+					</nav>
+				</div>
 			</div>
 		</header>
 	<%
 		String loginMessage = "";
 	    loginMessage = (String) session1.getAttribute("loginMessage");
 	    if (loginMessage != null) {
-	        out.println("<div class=\"message\">" + loginMessage + "</div>");
+	        out.println("<div class='alert alert-info mt-3'>" + loginMessage + "</div>");
 	        session1.setAttribute("loginMessage", null);
 	    }
 	%>
 	<% if (session1.getAttribute("loggedIn") != null && (Boolean) session1.getAttribute("loggedIn")) { %>
-	  <div class="wrapper">
-	  	<div class="search-container">
-	      <input type="text" id="search-input" placeholder="Search..." onkeyup="searchFunction()">
-	      </div>
-	      <ul id="search-results" class="search-results"></ul>
+	  <div class="container">
+	  	<div class="input-group my-3">
+	      <input type="text" id="search-input" class="form-control" placeholder="Search..." onkeyup="searchFunction()">
+	      <button class="btn btn-primary" type="button">Search</button>
+	    </div>
+	    <ul id="search-results" class="list-unstyled"></ul>
 	  </div>
 	<% } %>
 <script src="${contextPath}/resources/searchbar.js"></script>

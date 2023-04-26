@@ -8,7 +8,8 @@
 <html> 
 <head>
 	<title>Login Page</title>
-	<link rel="stylesheet" href="${contextPath}/resources/style2.css" type = "text/css">
+	<link href="bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+	<script type="text/javascript" src="bootstrap/js/bootstrap.min.js"></script>
 	<link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
@@ -27,49 +28,69 @@
 		        }
 		    }
 		%>
-		<div class="main">
-		<header style="postion:fixed;left:20px;">
-			<a href="index.jsp">
-				<h1>ShopFinity</h1>
-			</a>
-			
-			<% if (session1.getAttribute("loggedIn") != null && (Boolean) session1.getAttribute("loggedIn")) { %>
-			<a href = "logout.jsp">
-				<span style="float:right;">Sign Out</span>
-			</a>
-			<% } %>
-		</header>
 		<div class="container">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="index.jsp">
+        <h1>ShopFinity</h1>
+    </a>
+    <% if (session1.getAttribute("loggedIn") != null && (Boolean) session1.getAttribute("loggedIn")) { %>
+        <a class="nav-link" href="logout.jsp" style="float:right;">Sign Out</a>
+    <% } %>
+</nav>
 
-			<h1>Login</h1>
-			
-			<%
-			
-				String signUpMessage = (String) session1.getAttribute("signUpMessage");
-			    if (signUpMessage != null) {
-			        out.println("<div class=\"message\">" + signUpMessage + "</div>");
-			    }
-			%>
-			<%
-				String error = request.getParameter("error");
-				
-				if (error != null && error.equals("invalid")) {
-				    out.println("<div class=\"message\">Invalid email or password</div>");
-				}
-			%>
-			<% if (session1.getAttribute("loggedIn") == null || (Boolean) session1.getAttribute("loggedIn") == false) { %>
-			<form action = "loginvalidate.jsp" method = "post">
-				<input class="input-field" type="email" id="email" name="email" placeholder="Enter your email" required>
-				<input class="input-field" type="password" id="password" name="password" placeholder="Enter your password" required>
-	
-				<a href="signup.jsp">Don't have an account? Create One.</a>
-	
-				<input type="submit" value="Login">
-			</form>
-			<% } else { %>
-			<div class="message"> You are already signed in!</div>
-			<% } %>
-		</div>
-		</div>
+
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card mt-4">
+                <div class="card-body">
+                    <h1 class="card-title text-center">Login</h1>
+                    <hr>
+                    <%
+                        String signUpMessage = (String) session1.getAttribute("signUpMessage");
+                        if (signUpMessage != null) {
+                    %>
+                        <div class="alert alert-info" role="alert">
+                            <%= signUpMessage %>
+                        </div>
+                    <% }
+                    %>
+                    <%
+                        String error = request.getParameter("error");
+                        if (error != null && error.equals("invalid")) {
+                    %>
+                        <div class="alert alert-danger" role="alert">
+                            Invalid email or password
+                        </div>
+                    <% }
+                    %>
+                    <% if (session1.getAttribute("loggedIn") == null || (Boolean) session1.getAttribute("loggedIn") == false) { %>
+                        <form action="loginvalidate.jsp" method="post">
+                            <div class="form-group">
+                                <label for="email">Email address:</label>
+                                <input type="email" class="form-control" id="email" name="email" placeholder="Enter your email" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="password">Password:</label>
+                                <input type="password" class="form-control" id="password" name="password" placeholder="Enter your password" required>
+                            </div>
+
+                            <div class="text-center">
+                                <a href="signup.jsp">Don't have an account? Create One.</a>
+                                <br>
+                                <br>
+                                <button type="submit" class="btn btn-primary">Login</button>
+                            </div>
+                        </form>
+                    <% } else { %>
+                        <div class="alert alert-info" role="alert">
+                            You are already signed in!
+                        </div>
+                    <% } %>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+		
 	</body> 
 </html>

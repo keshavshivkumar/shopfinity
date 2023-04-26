@@ -7,7 +7,7 @@
         HttpSession session1 = request.getSession();
         String connectionURL = "jdbc:mysql://localhost:3306/shopfinity";
         String username = "root";
-        String password = "qwertyuiop1@@1";
+        String password = "";
 
         Class.forName("com.mysql.jdbc.Driver");
         Connection con = DriverManager.getConnection(connectionURL, username, password);

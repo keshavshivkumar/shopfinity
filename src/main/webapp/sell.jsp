@@ -8,72 +8,93 @@
 <html> 
 <head>
 	<title>Index</title>
-	<link rel="stylesheet" href="${contextPath}/resources/style2.css" type = "text/css"> 
+	<link href="bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+	<script type="text/javascript" src="bootstrap/js/bootstrap.min.js"></script>
 	<link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
 </head>
 <body>
-		<%
-		HttpSession session1 = request.getSession();
-		String listed = request.getParameter("listed");
-		%>
-        <script>
-            let listed = "<%= listed %>";
-        
-            if (listed === "failure") {
-                alert("Vehicle ID already exists, please enter a different ID");
-            } else if (listed === "success") {
-                alert("Vehicle listed successfully");
-            }
-        </script>
-		<header>
-			<a href="index.jsp">
-				<h1>ShopFinity</h1>
-			</a>
-			<div class="nav-container">
-				<% if (session1.getAttribute("loggedIn") != null && (Boolean) session1.getAttribute("loggedIn")) { %>
-			
-			<a href = "logout.jsp">
-				Sign Out
-			</a>
-			<% } 
-            else {%>
-				<a href = "login.jsp">
-					Log In
-				</a>
-			<%} %>
-			</div>
-		</header>
-	
-    <% if (session1.getAttribute("loggedIn") != null && (Boolean) session1.getAttribute("loggedIn")) { %>
-        <h1>Create Vehicle Listing</h1>
-        <form action="createlisting.jsp" method="POST">
-            <label for="vehicle_id">Vehicle ID:</label>
-            <input type="number" id="vehicle_id" name="vehicle_id" required><br><br>
-        
-            <label for="vehicle_name">Vehicle Name:</label>
-            <input type="text" id="vehicle_name" name="vehicle_name" maxlength="25" required><br><br>
-        
-            <label for="vehicle_type">Vehicle Type:</label>
-            <input type="text" id="vehicle_type" name="vehicle_type" maxlength="10"><br><br>
-            
-            <label for="listing_price">Listing Price:</label>
-            <input type="number" id="listing_price" name="listing_price" required><br><br>
-            
-            <label for="min_price">Minimum Price:</label>
-            <input type="number" id="min_price" name="min_price" required><br><br>
-            
-            <label for="min_inc">Minimum Increment:</label>
-            <input type="number" id="min_inc" name="min_inc" required><br><br>
-        
-            <input type="submit" value="Submit">
-        </form> 
-    <% }
-    else {%>
-        <div class="message">You first need to login before you can sell cars!</div>
-    <%} %>
+    <%
+        HttpSession session1 = request.getSession();
+        String listed = request.getParameter("listed");
+    %>
+    <script>
+        let listed = "<%= listed %>";
 
+        if (listed === "failure") {
+            alert("Vehicle ID already exists, please enter a different ID");
+        } else if (listed === "success") {
+            alert("Vehicle listed successfully");
+        }
+    </script>
+    <header class="bg-light py-3">
+        <div class="container">
+            <div class="d-flex justify-content-between align-items-center">
+                <a href="index.jsp" class="text-decoration-none">
+                    <h1 class="text-dark">ShopFinity</h1>
+                </a>
+                <nav class="nav">
+                    <% if (session1.getAttribute("loggedIn") != null && (Boolean) session1.getAttribute("loggedIn")) { %>
+                        <a href="logout.jsp" class="nav-link">Sign Out</a>
+                    <% } else { %>
+                        <a href="login.jsp" class="nav-link">Log In</a>
+                    <% } %>
+                </nav>
+            </div>
+        </div>
+    </header>
 
-</body> 
+    <div class="container">
+        <% if (session1.getAttribute("loggedIn") != null && (Boolean) session1.getAttribute("loggedIn")) { %>
+            <div class="row justify-content-center">
+                <div class="col-md-6">
+                    <div class="card mt-4">
+                        <div class="card-body">
+                            <h1 class="card-title text-center">Create Vehicle Listing</h1>
+                            <hr>
+                            <form action="createlisting.jsp" method="POST">
+                                <div class="form-group">
+                                    <label for="vehicle_id">Vehicle ID:</label>
+                                    <input type="number" id="vehicle_id" name="vehicle_id" class="form-control" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="vehicle_name">Vehicle Name:</label>
+                                    <input type="text" id="vehicle_name" name="vehicle_name" maxlength="25" class="form-control" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="vehicle_type">Vehicle Type:</label>
+                                    <input type="text" id="vehicle_type" name="vehicle_type" maxlength="10" class="form-control">
+                                </div>
+                                <div class="form-group">
+                                    <label for="listing_price">Listing Price:</label>
+                                    <input type="number" id="listing_price" name="listing_price" class="form-control" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="min_price">Minimum Price:</label>
+                                    <input type="number" id="min_price" name="min_price" class="form-control" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="min_inc">Minimum Increment:</label>
+                                    <input type="number" id="min_inc" name="min_inc" class="form-control" required>
+                                </div>
+                                <div class="text-center">
+                                    <input type="submit" value="Submit" class="btn btn-primary">
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        <% } else { %>
+            <div class="row">
+                <div class="col-md-12 text-center mt-4">
+                    <div class="alert alert-warning">You first need to login before you can sell cars!</div>
+</div>
+</div>
+<% } %>
+</div>
+
+</body>
+
 </html>
