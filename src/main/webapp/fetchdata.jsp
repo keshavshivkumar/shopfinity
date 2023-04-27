@@ -1,6 +1,9 @@
 <%@ page import="java.sql.*" %> 
 <%@ page import="java.io.*" %>
-<%@ page contentType="text/html; charset=UTF-8" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+
+<c:set var="contextPath" value="${pageContext.request.contextPath}"/>
 
 <%
 	try {
@@ -16,8 +19,8 @@
 	    Class.forName("com.mysql.jdbc.Driver");
 	    Connection con = DriverManager.getConnection(connectionURL, username, password);
 	
-	    PreparedStatement stmt = con.prepareStatement("SELECT v.vehicle_id, v.vehicle_name, l.seller_id, e.full_name, l.listing_price, TIMESTAMPDIFF(MINUTE, NOW(), l.expiration_datetime) AS time_left FROM Vehicles AS v, Listings AS l, EndUsers as e WHERE v.vehicle_id=l.vehicle_id AND l.seller_id = e.email_id AND v.vehicle_name LIKE ? AND TIMESTAMPDIFF(MINUTE, NOW(), l.expiration_datetime) > 0");
-	    stmt.setString(1, "%" + query + "%");
+	    PreparedStatement stmt = con.prepareStatement("SELECT v.vehicle_id, v.vehicle_name, l.seller_id, e.full_name, l.listing_price, CONCAT(TIMESTAMPDIFF(HOUR, NOW(), l.expiration_datetime), 'h ', TIMESTAMPDIFF(MINUTE, NOW(), l.expiration_datetime) % 60, 'm ', TIMESTAMPDIFF(SECOND, NOW(), l.expiration_datetime) % 60, 's') AS time_left FROM Vehicles AS v, Listings AS l, EndUsers as e WHERE v.vehicle_id=l.vehicle_id AND l.seller_id = e.email_id AND v.vehicle_name LIKE ?");
+		stmt.setString(1, "%" + query + "%");
 	
 	    ResultSet rs = stmt.executeQuery();
 	
@@ -43,3 +46,25 @@
 	    out.println("Error: " + e.getMessage());
 	}
 %>
+<script>
+function formatTimeLeft(secondsLeft) {
+  const hours = Math.floor(secondsLeft / 3600);
+  const minutes = Math.floor((secondsLeft % 3600) / 60);
+  const seconds = secondsLeft % 60;
+  return `${hours}h ${minutes}m ${seconds}s`;
+}
+
+function updateTimers() {
+  const timeLeftElements = document.querySelectorAll("[id^='time-left-']");
+  timeLeftElements.forEach((element) => {
+    let secondsLeft = parseInt(element.getAttribute("data-seconds-left"));
+    if (secondsLeft > 0) {
+      secondsLeft--;
+      element.setAttribute("data-seconds-left", secondsLeft);
+      element.textContent = formatTimeLeft(secondsLeft);
+    }
+  });
+}
+
+setInterval(updateTimers, 1000);
+</script>
