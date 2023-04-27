@@ -39,7 +39,12 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
-                    <% if (session1.getAttribute("loggedIn") != null && (Boolean) session1.getAttribute("loggedIn")) { %>
+                    <% if (session1.getAttribute("loggedIn") != null && (Boolean) session1.getAttribute("loggedIn")) { 
+                    	if (session1.getAttribute("role_id") == "1"){%>
+                    	<li class="nav-item">
+                            <a href="reps.jsp" class="nav-link">Representatives</a>
+                        </li>
+                        <% } %>
                         <li class="nav-item">
                             <a href="sell.jsp" class="nav-link">Sell</a>
                         </li>
