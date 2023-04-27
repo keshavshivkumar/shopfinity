@@ -49,9 +49,11 @@
         <table class="table table-bordered">
             <thead>
                 <tr>
-                    <th>Vehicle ID</th>
+                    
                     <th>Vehicle Name</th>
+                    <th>Vehicle Model</th>
                     <th>Vehicle Type</th>
+                    <th>License Plate</th>
                     <th>Listing Price</th>
                     <th>Minimum Price</th>
                     <th>Minimum Increment</th>
@@ -68,7 +70,7 @@
                 try {
                     Class.forName("com.mysql.jdbc.Driver");
                     connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/shopfinity", "root", "");
-                    preparedStatement = connection.prepareStatement("SELECT V.vehicle_id, V.vehicle_name, V.vehicle_type, L.listing_price, L.min_price, L.min_inc, L.dt FROM Listings L INNER JOIN Vehicles V ON L.vehicle_id = V.vehicle_id WHERE L.seller_id = ?");
+                    preparedStatement = connection.prepareStatement("SELECT V.vehicle_id, V.vehicle_name, V.vehicle_model, V.vehicle_type, L.listing_price, L.license_plate, L.min_price, L.min_inc, L.dt FROM Listings L INNER JOIN Vehicles V ON L.vehicle_id = V.vehicle_id WHERE L.seller_id = ?");
 
                     preparedStatement.setString(1, userId);
                     resultSet = preparedStatement.executeQuery();
@@ -76,9 +78,11 @@
                     while (resultSet.next()) {
             %>
                     <tr>
-                        <td><%= resultSet.getInt("vehicle_id") %></td>
+                        
                         <td><%= resultSet.getString("vehicle_name") %></td>
+                        <td><%= resultSet.getString("vehicle_model") %></td>
                         <td><%= resultSet.getString("vehicle_type") %></td>
+                        <td><%= resultSet.getString("license_plate") %></td>
                         <td><%= resultSet.getDouble("listing_price") %></td>
                         <td><%= resultSet.getDouble("min_price") %></td>
                         <td><%= resultSet.getDouble("min_inc") %></td>

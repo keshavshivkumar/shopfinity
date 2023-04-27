@@ -13,37 +13,60 @@
         Class.forName("com.mysql.jdbc.Driver");
         Connection con = DriverManager.getConnection(connectionURL, username, password);
 
-        int vehicleId = Integer.parseInt(request.getParameter("vehicle_id"));
         String vehicleName = request.getParameter("vehicle_name");
+        String vehicleModel = request.getParameter("vehicle_model");
         String vehicleType = request.getParameter("vehicle_type");
         int listingPrice = Integer.parseInt(request.getParameter("listing_price"));
         int minPrice = Integer.parseInt(request.getParameter("min_price"));
         int minInc = Integer.parseInt(request.getParameter("min_inc"));
         String expDate = request.getParameter("exp_date");
+        String licensePlate = request.getParameter("license_plate");
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         java.util.Date parsedDate = dateFormat.parse(expDate);
         java.sql.Timestamp expirationTimestamp = new java.sql.Timestamp(parsedDate.getTime());
-        boolean confirmed = Boolean.parseBoolean(request.getParameter("confirmed"));
 
-        String checkQuery = "SELECT vehicle_id FROM Vehicles WHERE vehicle_id = ?";
+        // Check for unique license plate
+        String checkLicensePlateQuery = "SELECT license_plate FROM Listings WHERE license_plate = ?";
+        PreparedStatement checkLicensePlateStatement = con.prepareStatement(checkLicensePlateQuery);
+        checkLicensePlateStatement.setString(1, licensePlate);
+        ResultSet licensePlateResultSet = checkLicensePlateStatement.executeQuery();
+        if (licensePlateResultSet.next()) {
+            response.sendRedirect("sell.jsp?error=license_plate_not_unique");
+            return;
+        }
+
+        // Check for existing vehicle
+        String checkQuery = "SELECT vehicle_id FROM Vehicles WHERE vehicle_name = ? AND vehicle_model = ? AND vehicle_type = ?";
         PreparedStatement checkStatement = con.prepareStatement(checkQuery);
-        checkStatement.setInt(1, vehicleId);
+        checkStatement.setString(1, vehicleName.toUpperCase());
+        checkStatement.setString(2, vehicleModel.toUpperCase());
+        checkStatement.setString(3, vehicleType.toUpperCase());
         ResultSet rs = checkStatement.executeQuery();
-        if (rs.next() && !confirmed) {
-            response.sendRedirect("sell.jsp?listed=confirm");
+        int vehicleId;
+
+        if (rs.next()) {
+            vehicleId = rs.getInt("vehicle_id");
         } else {
-            if (!rs.next()) {
-                String insertQuery = "INSERT INTO Vehicles (vehicle_id, vehicle_name, vehicle_type) VALUES (?, ?, ?)";
-                PreparedStatement insertStatement = con.prepareStatement(insertQuery);
-                insertStatement.setInt(1, vehicleId);
-                insertStatement.setString(2, vehicleName);
-                insertStatement.setString(3, vehicleType);
-                insertStatement.executeUpdate();
+            String insertVehicleQuery = "INSERT INTO Vehicles (vehicle_name, vehicle_model, vehicle_type) VALUES (?, ?, ?)";
+            PreparedStatement insertVehicleStatement = con.prepareStatement(insertVehicleQuery, Statement.RETURN_GENERATED_KEYS);
+            String vehicleNameUpper = vehicleName.toUpperCase();
+            String vehicleModelUpper = vehicleModel.toUpperCase();
+            String vehicleTypeUpper = vehicleType.toUpperCase();
+            insertVehicleStatement.setString(1, vehicleNameUpper);
+            insertVehicleStatement.setString(2, vehicleModelUpper);
+            insertVehicleStatement.setString(3, vehicleTypeUpper);
+            insertVehicleStatement.executeUpdate();
+
+            ResultSet generatedKeys = insertVehicleStatement.getGeneratedKeys();
+            if (generatedKeys.next()) {
+                vehicleId = generatedKeys.getInt(1);
+            } else {
+                throw new SQLException("Creating vehicle failed, no ID obtained.");
             }
         }
-        
+		
         String seller_id = (String) session1.getAttribute("user");
-        String insertListingQuery = "INSERT INTO Listings (vehicle_id, dt, seller_id, buyer_id, final_bid, listing_price, min_price, min_inc, sold, expiration_datetime) VALUES (?, NOW(), ?, NULL, NULL, ?, ?, ?, false, ?)";
+        String insertListingQuery = "INSERT INTO Listings (vehicle_id, dt, seller_id, buyer_id, final_bid, listing_price, min_price, min_inc, sold, expiration_datetime, license_plate) VALUES (?, NOW(), ?, NULL, NULL, ?, ?, ?, false, ?, ?)";
         PreparedStatement insertListingStatement = con.prepareStatement(insertListingQuery);
         insertListingStatement.setInt(1, vehicleId);
         insertListingStatement.setString(2, seller_id);
@@ -51,6 +74,7 @@
         insertListingStatement.setInt(4, minPrice);
         insertListingStatement.setInt(5, minInc);
         insertListingStatement.setTimestamp(6, expirationTimestamp);
+        insertListingStatement.setString(7, licensePlate);
         insertListingStatement.executeUpdate();
 
         response.sendRedirect("sell.jsp?listed=success");
@@ -60,3 +84,4 @@
         out.println("Error: " + e.getMessage());
     }
 %>
+

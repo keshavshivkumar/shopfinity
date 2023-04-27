@@ -62,7 +62,7 @@
                         ResultSet rs = null;
                         Statement statement = null;
                         Class.forName("com.mysql.jdbc.Driver");
-                        connection = DriverManager.getConnection(connectionURL, "root", "mutexlock");
+                        connection = DriverManager.getConnection(connectionURL, "root", "");
                         statement = connection.createStatement();
                         String query = "SELECT * FROM EndUsers WHERE role_id=2";
                         rs = statement.executeQuery(query);

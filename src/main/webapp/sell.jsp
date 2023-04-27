@@ -30,7 +30,7 @@
     } else if (listed === "success") {
         alert("Vehicle listed successfully");
     }
-</script>
+	</script>
 
     <header class="navbar navbar-expand-lg navbar-dark bg-primary py-3">
     <div class="container">
@@ -54,7 +54,6 @@
     </div>
 </header>
 
-
     <div class="container">
         <% if (session1.getAttribute("loggedIn") != null && (Boolean) session1.getAttribute("loggedIn")) { %>
             <div class="row justify-content-center">
@@ -63,18 +62,25 @@
                         <div class="card-body">
                             <h1 class="card-title text-center">Create Vehicle Listing</h1>
                             <hr>
+                            <% if ("license_plate_not_unique".equals(request.getParameter("error"))) { %>
+                            <p style="color: red;">Error: License plate already exists. Please enter a unique license plate.</p>
+                        	<% } %>
                             <form action="createlisting.jsp" method="POST" id="listingForm">
-                                <div class="form-group">
-                                    <label for="vehicle_id">Vehicle ID:</label>
-                                    <input type="number" id="vehicle_id" name="vehicle_id" class="form-control" required>
-                                </div>
                                 <div class="form-group">
                                     <label for="vehicle_name">Vehicle Name:</label>
                                     <input type="text" id="vehicle_name" name="vehicle_name" maxlength="25" class="form-control" required>
                                 </div>
                                 <div class="form-group">
+                                    <label for="vehicle_model">Vehicle Model:</label>
+                                    <input type="text" id="vehicle_model" name="vehicle_model" maxlength="25" class="form-control" required>
+                                </div>
+                                <div class="form-group">
                                     <label for="vehicle_type">Vehicle Type:</label>
                                     <input type="text" id="vehicle_type" name="vehicle_type" maxlength="10" class="form-control">
+                                </div>
+                                <div class="form-group">
+                                    <label for="license_plate">License Plate:</label>
+                                    <input type="text" id="license_plate" name="license_plate" maxlength="10" class="form-control" required>
                                 </div>
                                 <div class="form-group">
                                     <label for="listing_price">Listing Price:</label>
@@ -89,28 +95,26 @@
                                     <input type="number" id="min_inc" name="min_inc" class="form-control" required>
                                 </div>
                                 <div class="form-group">
-                                	<label for="exp_date">Expiration Date:</label>
-									<input type="date" id="exp_date" name="exp_date" class="form-control" required>
-								</div>
-									<input type="hidden" id="confirmed" name="confirmed" value="false">
-								<div class="text-center">
-									<input type="submit" value="Submit" class="btn btn-primary">
-								</div>
-							</form>
-						</div>
-					</div>
-				</div>
-			</div>
-		<% } else { %>
-			<div class="row">
-				<div class="col-md-12 text-center mt-4">
-					<div class="alert alert-warning">You first need to login before you can sell cars!</div>
-				</div>
-			</div>
-		<% } %>
-	</div>
+                                    <label for="exp_date">Expiration Date:</label>
+                                    <input type="date" id="exp_date" name="exp_date" class="form-control" required>
+                                </div>
+                                <input type="hidden" id="confirmed" name="confirmed" value="false">
+                                <div class="text-center">
+                                    <input type="submit" value="Submit" class="btn btn-primary">
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        <% } else { %>
+            <div class="row">
+                <div class="col-md-12 text-center mt-4">
+                    <div class="alert alert-warning">You first need to login before you can sell cars!</div>
+                </div>
+            </div>
+        <% } %>
+    </div>
 
 </body>
-
-
 </html>
