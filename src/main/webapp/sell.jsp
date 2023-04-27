@@ -20,14 +20,18 @@
         String listed = request.getParameter("listed");
     %>
     <script>
-        let listed = "<%= listed %>";
+    let listed = "<%= listed %>";
 
-        if (listed === "failure") {
-            alert("Vehicle ID already exists, please enter a different ID");
-        } else if (listed === "success") {
-            alert("Vehicle listed successfully");
+    if (listed === "confirm") {
+        if (confirm("The Vehicle ID already exists. Do you want to sell a unit of the existing vehicle?")) {
+            document.getElementById("confirmed").value = "true";
+            document.getElementById("listingForm").submit();
         }
-    </script>
+    } else if (listed === "success") {
+        alert("Vehicle listed successfully");
+    }
+</script>
+
     <header class="navbar navbar-expand-lg navbar-dark bg-primary py-3">
     <div class="container">
         <a href="index.jsp" class="navbar-brand text-decoration-none">
@@ -59,7 +63,7 @@
                         <div class="card-body">
                             <h1 class="card-title text-center">Create Vehicle Listing</h1>
                             <hr>
-                            <form action="createlisting.jsp" method="POST">
+                            <form action="createlisting.jsp" method="POST" id="listingForm">
                                 <div class="form-group">
                                     <label for="vehicle_id">Vehicle ID:</label>
                                     <input type="number" id="vehicle_id" name="vehicle_id" class="form-control" required>
@@ -85,26 +89,28 @@
                                     <input type="number" id="min_inc" name="min_inc" class="form-control" required>
                                 </div>
                                 <div class="form-group">
-                                    <label for="exp_date">Expiration Date:</label>
-                                    <input type="date" id="exp_date" name="exp_date" class="form-control" required>
-                                </div>
-                                <div class="text-center">
-                                    <input type="submit" value="Submit" class="btn btn-primary">
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        <% } else { %>
-            <div class="row">
-                <div class="col-md-12 text-center mt-4">
-                    <div class="alert alert-warning">You first need to login before you can sell cars!</div>
-</div>
-</div>
-<% } %>
-</div>
+                                	<label for="exp_date">Expiration Date:</label>
+									<input type="date" id="exp_date" name="exp_date" class="form-control" required>
+								</div>
+									<input type="hidden" id="confirmed" name="confirmed" value="false">
+								<div class="text-center">
+									<input type="submit" value="Submit" class="btn btn-primary">
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+		<% } else { %>
+			<div class="row">
+				<div class="col-md-12 text-center mt-4">
+					<div class="alert alert-warning">You first need to login before you can sell cars!</div>
+				</div>
+			</div>
+		<% } %>
+	</div>
 
 </body>
+
 
 </html>

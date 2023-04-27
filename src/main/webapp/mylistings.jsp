@@ -67,8 +67,9 @@
 
                 try {
                     Class.forName("com.mysql.jdbc.Driver");
-                    connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/shopfinity", "root", "qwertyuiop1@@1");
-                    preparedStatement = connection.prepareStatement("SELECT V.vehicle_id, V.vehicle_name, V.vehicle_type, L.listing_price, L.min_price, L.min_inc FROM Listings L INNER JOIN Vehicles V ON L.vehicle_id = V.vehicle_id WHERE L.seller_id = ?");
+                    connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/shopfinity", "root", "");
+                    preparedStatement = connection.prepareStatement("SELECT V.vehicle_id, V.vehicle_name, V.vehicle_type, L.listing_price, L.min_price, L.min_inc, L.dt FROM Listings L INNER JOIN Vehicles V ON L.vehicle_id = V.vehicle_id WHERE L.seller_id = ?");
+
                     preparedStatement.setString(1, userId);
                     resultSet = preparedStatement.executeQuery();
 
@@ -84,6 +85,7 @@
                         <td>
                             <form action="deletelisting.jsp" method="POST">
                                 <input type="hidden" name="vehicle_id" value="<%= resultSet.getInt("vehicle_id") %>">
+                                <input type="hidden" name="dt" value="<%= resultSet.getTimestamp("dt") %>">
                                 <button type="submit" class="btn btn-danger">Delete</button>
                             </form>
                         </td>
