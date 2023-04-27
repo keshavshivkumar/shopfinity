@@ -46,6 +46,9 @@
                         </li>
                         <% } %>
                         <li class="nav-item">
+                            <a href="mylistings.jsp" class="nav-link">My Listings</a>
+                        </li>
+                        <li class="nav-item">
                             <a href="sell.jsp" class="nav-link">Sell</a>
                         </li>
                         <li class="nav-item">

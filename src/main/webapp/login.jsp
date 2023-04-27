@@ -28,23 +28,23 @@
 		        }
 		    }
 		%>
-		<div class="container">
+		
     <header class="navbar navbar-expand-lg navbar-dark bg-primary py-3">
     <div class="container">
         <a href="index.jsp" class="navbar-brand text-decoration-none">
             <h1 class="text-white">ShopFinity</h1>
         </a>
-        <% if (session1.getAttribute("loggedIn") != null && (Boolean) session1.getAttribute("loggedIn")) { %>
-            <ul class="navbar-nav ms-auto">
+        <nav class="navbar-nav ms-auto">
+            <% if (session1.getAttribute("loggedIn") != null && (Boolean) session1.getAttribute("loggedIn")) { %>
                 <li class="nav-item">
                     <a href="logout.jsp" class="nav-link">Sign Out</a>
                 </li>
-            </ul>
-        <% } %>
+            <% } %>
+        </nav>
     </div>
 </header>
 
-
+<div class="container">
 
     <div class="row justify-content-center">
         <div class="col-md-6">
@@ -59,7 +59,7 @@
                         <div class="alert alert-info" role="alert">
                             <%= signUpMessage %>
                         </div>
-                    <% }
+                    <% session1.setAttribute("signUpMessage", null);}
                     %>
                     <%
                         String error = request.getParameter("error");

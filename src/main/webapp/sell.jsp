@@ -36,7 +36,7 @@
         <nav class="navbar-nav ms-auto">
             <% if (session1.getAttribute("loggedIn") != null && (Boolean) session1.getAttribute("loggedIn")) { %>
                 <li class="nav-item">
-                    <a href="sell.jsp" class="nav-link">Sell</a>
+                            <a href="mylistings.jsp" class="nav-link">My Listings</a>
                 </li>
                 <li class="nav-item">
                     <a href="logout.jsp" class="nav-link">Sign Out</a>

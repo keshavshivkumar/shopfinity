@@ -13,7 +13,7 @@
     Connection connection = null;
     PreparedStatement pstmt = null;
     Class.forName("com.mysql.jdbc.Driver");
-    connection = DriverManager.getConnection(connectionURL, "root", "mutexlock");
+    connection = DriverManager.getConnection(connectionURL, "root", "");
     String query = "UPDATE EndUsers SET role_id=? WHERE email_id=?";
     pstmt = connection.prepareStatement(query);
     pstmt.setInt(1, role_id);

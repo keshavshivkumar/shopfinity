@@ -11,12 +11,12 @@
 	
 	    String connectionURL = "jdbc:mysql://localhost:3306/shopfinity";
 	    String username = "root";
-	    String password = "mutexlock";
+	    String password = "";
 	
 	    Class.forName("com.mysql.jdbc.Driver");
 	    Connection con = DriverManager.getConnection(connectionURL, username, password);
 	
-	    PreparedStatement stmt = con.prepareStatement("SELECT v.vehicle_id, v.vehicle_name, l.seller_id, e.full_name, l.listing_price, TIMESTAMPDIFF(MINUTE, NOW(), l.expiration_date) AS time_left FROM Vehicles AS v, Listings AS l, EndUsers as e WHERE v.vehicle_id=l.vehicle_id AND l.seller_id = e.email_id AND v.vehicle_name LIKE ? AND TIMESTAMPDIFF(MINUTE, NOW(), l.expiration_date) > 0");
+	    PreparedStatement stmt = con.prepareStatement("SELECT v.vehicle_id, v.vehicle_name, l.seller_id, e.full_name, l.listing_price, TIMESTAMPDIFF(MINUTE, NOW(), l.expiration_datetime) AS time_left FROM Vehicles AS v, Listings AS l, EndUsers as e WHERE v.vehicle_id=l.vehicle_id AND l.seller_id = e.email_id AND v.vehicle_name LIKE ? AND TIMESTAMPDIFF(MINUTE, NOW(), l.expiration_datetime) > 0");
 	    stmt.setString(1, "%" + query + "%");
 	
 	    ResultSet rs = stmt.executeQuery();
