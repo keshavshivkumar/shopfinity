@@ -84,6 +84,10 @@
                                     <label for="min_inc">Minimum Increment:</label>
                                     <input type="number" id="min_inc" name="min_inc" class="form-control" required>
                                 </div>
+                                <div class="form-group">
+                                    <label for="exp_date">Expiration Date:</label>
+                                    <input type="date" id="exp_date" name="exp_date" class="form-control" required>
+                                </div>
                                 <div class="text-center">
                                     <input type="submit" value="Submit" class="btn btn-primary">
                                 </div>
