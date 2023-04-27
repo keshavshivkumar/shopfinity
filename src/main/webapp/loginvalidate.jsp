@@ -21,6 +21,7 @@
 		// Login successful, redirect to home page
 		session1.setAttribute("loggedIn", false);
 		session1.setAttribute("user", email);
+		session1.setAttribute("role_id", rs.getInt("role_id"));
 		response.sendRedirect("index.jsp?login=success");
 	} else {
 		// Login failed, redirect back to login form
