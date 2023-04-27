@@ -17,6 +17,30 @@
     </style>
 </head>
 <body>
+<% HttpSession session1 = request.getSession(); %>
+<header class="navbar navbar-expand-lg navbar-dark bg-primary py-3">
+        <div class="container">
+            <a href="index.jsp" class="navbar-brand text-decoration-none">
+                <h1 class="text-white">ShopFinity</h1>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <% if (session1.getAttribute("loggedIn") != null && (Boolean) session1.getAttribute("loggedIn")) {%>
+                        <li class="nav-item">
+                            <a href="logout.jsp" class="nav-link">Sign Out</a>
+                        </li>
+                    <% } else { %>
+                        <li class="nav-item">
+                            <a href="login.jsp" class="nav-link">Log In</a>
+                        </li>
+                    <% } %>
+                </ul>
+            </div>
+        </div>
+    </header>
     <div class="container">
         <h1 class="my-3">Customer Representatives</h1>
 
@@ -38,7 +62,7 @@
                         ResultSet rs = null;
                         Statement statement = null;
                         Class.forName("com.mysql.jdbc.Driver");
-                        connection = DriverManager.getConnection(connectionURL, "root", "mutexlock");
+                        connection = DriverManager.getConnection(connectionURL, "root", "");
                         statement = connection.createStatement();
                         String query = "SELECT * FROM EndUsers WHERE role_id=2";
                         rs = statement.executeQuery(query);
