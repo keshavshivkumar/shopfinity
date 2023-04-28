@@ -16,3 +16,4 @@
 - validate.jsp
 - mylistings.jsp
 - reps.jsp
+- listings.jsp
