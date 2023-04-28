@@ -70,7 +70,7 @@
                 try {
                     Class.forName("com.mysql.jdbc.Driver");
                     connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/shopfinity", "root", "");
-                    preparedStatement = connection.prepareStatement("SELECT v.vehicle_id, v.vehicle_name, v.vehicle_model, v.vehicle_type, l.seller_id, e.full_name, l.listing_price, l.dt, CONCAT(TIMESTAMPDIFF(HOUR, NOW(), l.expiration_datetime), 'h ', TIMESTAMPDIFF(MINUTE, NOW(), l.expiration_datetime) % 60, 'm ', TIMESTAMPDIFF(SECOND, NOW(), l.expiration_datetime) % 60, 's') AS time_left FROM Vehicles AS v, Listings AS l, EndUsers as e WHERE v.vehicle_id=l.vehicle_id AND l.seller_id = e.email_id AND v.vehicle_id=l.vehicle_id");
+                    preparedStatement = connection.prepareStatement("SELECT v.vehicle_id, v.vehicle_name, v.vehicle_model, v.vehicle_type, l.seller_id, e.full_name, l.listing_price, l.dt, l.license_plate, CONCAT(TIMESTAMPDIFF(HOUR, NOW(), l.expiration_datetime), 'h ', TIMESTAMPDIFF(MINUTE, NOW(), l.expiration_datetime) % 60, 'm ', TIMESTAMPDIFF(SECOND, NOW(), l.expiration_datetime) % 60, 's') AS time_left FROM Vehicles AS v, Listings AS l, EndUsers as e WHERE v.vehicle_id=l.vehicle_id AND l.seller_id = e.email_id AND v.vehicle_id=l.vehicle_id");
 
                     resultSet = preparedStatement.executeQuery();
 
@@ -85,7 +85,14 @@
                     <td><%= resultSet.getString("time_left") %></td>
                     <td>
 					    <% if (session1.getAttribute("loggedIn") != null && (Boolean) session1.getAttribute("loggedIn")) { %>
-					        <button id="id-button-<%= resultSet.getInt("vehicle_id") %>" data-vehicle-id="<%= resultSet.getInt("vehicle_id") %>" data-seller-id="<%= resultSet.getString("seller_id") %>" onclick="handleBidButtonClick('<%= resultSet.getInt("vehicle_id") %>', '<%= resultSet.getString("seller_id") %>')">Bid</button>
+					        <form action="bidform.jsp" method="POST">
+					            <input type="hidden" name="vehicle_id" value="<%= resultSet.getInt("vehicle_id") %>">
+					            <input type="hidden" name="dt" value="<%= resultSet.getTimestamp("dt") %>">
+					            <input type="hidden" name="license_plate" value="<%= resultSet.getString("license_plate") %>">
+					            <input type="hidden" name="seller_id" value="<%= resultSet.getString("seller_id") %>">
+					            <input type="hidden" name="redirectpage" value="listings.jsp">
+					            <button type="submit" class="btn-primary">Bid</button>
+					  		</form>
 					    <% } %>
 					</td>
 					<% if (session1.getAttribute("loggedIn") != null && (Boolean) session1.getAttribute("loggedIn") && Integer.parseInt(session1.getAttribute("role_id").toString()) < 3) { %>
@@ -98,7 +105,7 @@
 					        </form>
 					    </td>
 					<% } %>
-
+					
                 </tr>
             <%
                     }
