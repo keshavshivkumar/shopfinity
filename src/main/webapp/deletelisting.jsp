@@ -9,6 +9,7 @@
     SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
     java.util.Date parsedDate = dateFormat.parse(dt);
     java.sql.Timestamp dtTimestamp = new java.sql.Timestamp(parsedDate.getTime());
+    String redirect = null;
 
     HttpSession session1 = request.getSession();
     String userId = session1.getAttribute("user").toString();
@@ -25,19 +26,24 @@
             preparedStatement = connection.prepareStatement("DELETE FROM Listings WHERE vehicle_id=? AND dt=?");
             preparedStatement.setInt(1, vehicleId);
             preparedStatement.setTimestamp(2, dtTimestamp);
+            redirect = request.getParameter("redirectpage");
+            if (redirect == null){
+            	redirect = "index.jsp";
+            }
         } else {
             preparedStatement = connection.prepareStatement("DELETE FROM Listings WHERE vehicle_id=? AND seller_id=? AND dt=?");
             preparedStatement.setInt(1, vehicleId);
             preparedStatement.setString(2, userId);
             preparedStatement.setTimestamp(3, dtTimestamp);
+            redirect = "mylistings.jsp";
         }
         
         preparedStatement.executeUpdate();
 
-        response.sendRedirect("mylistings.jsp?deleted=success");
+        response.sendRedirect(redirect+"?deleted=success");
     } catch (Exception e) {
         e.printStackTrace();
-        response.sendRedirect("mylistings.jsp?deleted=failure");
+        response.sendRedirect(redirect+"?deleted=failure");
     } finally {
         if (preparedStatement != null) preparedStatement.close();
         if (connection != null) connection.close();

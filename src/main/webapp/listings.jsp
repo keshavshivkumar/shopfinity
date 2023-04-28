@@ -66,7 +66,7 @@
 
                 try {
                     Class.forName("com.mysql.jdbc.Driver");
-                    connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/shopfinity", "root", "mutexlock");
+                    connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/shopfinity", "root", "");
                     preparedStatement = connection.prepareStatement("SELECT v.vehicle_id, v.vehicle_name, v.vehicle_model, v.vehicle_type, l.seller_id, e.full_name, l.listing_price, l.dt, CONCAT(TIMESTAMPDIFF(HOUR, NOW(), l.expiration_datetime), 'h ', TIMESTAMPDIFF(MINUTE, NOW(), l.expiration_datetime) % 60, 'm ', TIMESTAMPDIFF(SECOND, NOW(), l.expiration_datetime) % 60, 's') AS time_left FROM Vehicles AS v, Listings AS l, EndUsers as e WHERE v.vehicle_id=l.vehicle_id AND l.seller_id = e.email_id AND v.vehicle_id=l.vehicle_id");
 
                     resultSet = preparedStatement.executeQuery();
@@ -90,6 +90,7 @@
 					        <form action="deletelisting.jsp" method="POST">
 					            <input type="hidden" name="vehicle_id" value="<%= resultSet.getInt("vehicle_id") %>">
 					            <input type="hidden" name="dt" value="<%= resultSet.getTimestamp("dt") %>">
+					            <input type="hidden" name="redirectpage" value="listings.jsp">
 					            <button type="submit" class="btn btn-danger">Delete</button>
 					        </form>
 					    </td>
