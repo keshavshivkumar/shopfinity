@@ -49,6 +49,11 @@
   <div class="container">
     <div class="row">
       <div class="col-md-6 offset-md-3">
+      <% if(request.getAttribute("errorMessage") != null) { %>
+		  <div class="alert alert-danger">
+		      <%= request.getAttribute("errorMessage") %>
+		  </div>
+		<% } %>
         <h2 class="text-center mt-4 mb-3">Bid Form</h2>
 
         <% if (session.getAttribute("loggedIn") != null && (Boolean) session.getAttribute("loggedIn")) { %>

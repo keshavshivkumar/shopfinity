@@ -5,15 +5,27 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
 <c:set var="contextPath" value="${pageContext.request.contextPath}"/>
-
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Submit Bid Debug</title>
+    <script type="text/javascript">
+        function showAlert(message) {
+            alert(message);
+        }
+    </script>
+</head>
+<body>
 <%
-    int vehicleId = Integer.parseInt(request.getParameter("vehicle_id"));
-    String dt = request.getParameter("dt");
-    String license = request.getParameter("license_plate");
-    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
-    java.util.Date parsedDate = dateFormat.parse(dt);
-    java.sql.Timestamp dtTimestamp = new java.sql.Timestamp(parsedDate.getTime());
-    
+	int vehicleId = Integer.parseInt(request.getParameter("vehicle_id"));
+	String license = request.getParameter("license_plate");
+	String sellerId = request.getParameter("seller_id");
+	
+	SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
+	java.util.Date currentDate = new java.util.Date();
+	java.sql.Timestamp dtTimestamp = new java.sql.Timestamp(currentDate.getTime());
+	
     int bidAmount = Integer.parseInt(request.getParameter("bid_amount"));
     int upperLimit = Integer.parseInt(request.getParameter("upper_limit"));
     
@@ -25,18 +37,21 @@
     ResultSet resultSet = null;
     
     try {
+    	
         Class.forName("com.mysql.jdbc.Driver");
         connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/shopfinity", "root", "");
         
         // Check if the bid amount is greater than or equal to the minimum price
-        preparedStatement = connection.prepareStatement("SELECT min_price, min_inc FROM Listings WHERE vehicle_id=? AND dt=?");
+        preparedStatement = connection.prepareStatement("SELECT min_price, min_inc FROM Listings WHERE vehicle_id=? AND license_plate=?");
         preparedStatement.setInt(1, vehicleId);
-        preparedStatement.setTimestamp(2, dtTimestamp);
+        preparedStatement.setString(2, license);
         resultSet = preparedStatement.executeQuery();
         
         if (resultSet.next()) {
             int minPrice = resultSet.getInt("min_price");
             int minInc = resultSet.getInt("min_inc");
+            
+            
             if (bidAmount >= minPrice) {
                 // Get the current final_bid and seller_id from Listings
                 preparedStatement = connection.prepareStatement("SELECT b.vehicle_id, MAX(b.bid_amount) as highest_bid_amount, l.seller_id FROM Bids as b, Listings as l WHERE b.vehicle_id=? AND b.dt=? AND b.license_plate=? AND b.vehicle_id=l.vehicle_id AND b.seller_id=l.seller_id AND b.license_plate = l.license_plate");
@@ -47,7 +62,6 @@
 		                
 		        if (resultSet.next()) {
 		            int currentBid = resultSet.getInt("highest_bid_amount");
-		            String sellerId = resultSet.getString("seller_id");
                     
                     // Check if the new bid is greater than the current highest bid
                     if (bidAmount > currentBid) {
@@ -65,7 +79,25 @@
                             currentHighestBuyerId = resultSet.getString("buyer_id");
                             currentHighestUpperLimit = resultSet.getInt("upper_limit");
                         } else {
-                            throw new Exception("Failed to fetch current highest bidder information");
+                        	preparedStatement = connection.prepareStatement("INSERT INTO Bids (vehicle_id, dt, seller_id, buyer_id, upper_limit, bid_amount, license_plate) VALUES (?, ?, ?, ?, ?, ?, ?)");
+                            preparedStatement.setInt(1, vehicleId);
+                            preparedStatement.setTimestamp(2, dtTimestamp);
+                            preparedStatement.setString(3, sellerId);
+                            preparedStatement.setString(4, buyerId);
+                            preparedStatement.setInt(5, upperLimit);
+                            preparedStatement.setInt(6, bidAmount);
+                            preparedStatement.setString(7, license);
+                            preparedStatement.executeUpdate();
+
+                            // Update the final_bid in the Listings table
+                            preparedStatement = connection.prepareStatement("UPDATE Listings SET final_bid=? WHERE vehicle_id=? AND dt=?");
+                            preparedStatement.setInt(1, bidAmount);
+                            preparedStatement.setInt(2, vehicleId);
+                            preparedStatement.setTimestamp(3, dtTimestamp);
+                            preparedStatement.executeUpdate();
+
+                            response.sendRedirect("index.jsp?vehicle_id=" + vehicleId + "&bid=success");
+                            return;
                         }
 
                         int newBidForCurrentHighest = currentBid;
@@ -112,24 +144,35 @@
                         preparedStatement.setTimestamp(3, dtTimestamp);
                         preparedStatement.executeUpdate();
                         
-                        response.sendRedirect("index.jsp?vehicle_id=" + vehicleId + "&dt=" + dt + "&bid=success");
+                        response.sendRedirect("index.jsp?vehicle_id=" + vehicleId + "&bid=success");
                     } else {
-                        response.sendRedirect("listings.jsp?vehicle_id=" + vehicleId + "&dt=" + dt + "&bid=failure");
+                    	request.setAttribute("errorMessage", "Your error message");
+                    	RequestDispatcher dispatcher = request.getRequestDispatcher("bidform.jsp?vehicle_id=" + vehicleId);
+                    	dispatcher.forward(request, response);
                     }
                 } else {
-                    response.sendRedirect("bidform.jsp?vehicle_id=" + vehicleId + "&dt=" + dt + "&bid=below_min_price");
+                	request.setAttribute("errorMessage", "Your error message");
+                	RequestDispatcher dispatcher = request.getRequestDispatcher("listings.jsp?vehicle_id=" + vehicleId);
+                	dispatcher.forward(request, response);
+
                 }
+		        
             } else {
-                response.sendRedirect("listings.jsp?vehicle_id=" + vehicleId + "&dt=" + dt + "&bid=failure");
+            	request.setAttribute("errorMessage", "Your error message");
+            	RequestDispatcher dispatcher = request.getRequestDispatcher("bidform.jsp?vehicle_id=" + vehicleId);
+            	dispatcher.forward(request, response);
             }
         }
         } catch (Exception e) {
-            e.printStackTrace();
-            response.sendRedirect("listings.jsp?vehicle_id=" + vehicleId + "&dt=" + dt + "&bid=failure");
+        	 e.printStackTrace();
+        	    String exceptionMessage = e.getMessage();
+        	    response.sendRedirect("listings.jsp?vehicle_id=" + vehicleId + "&dt=" + dtTimestamp + "&bid_amount=" + bidAmount + "&bid=failure&exceptionMessage=" + exceptionMessage);
         } finally {
             if (resultSet != null) resultSet.close();
             if (preparedStatement != null) preparedStatement.close();
             if (connection != null) connection.close();
         }
     %>
+    </body>
+</html>
 
