@@ -73,6 +73,9 @@
 	%>
 	<% if (session1.getAttribute("loggedIn") != null && (Boolean) session1.getAttribute("loggedIn")) { %>
 	  <div class="container">
+			<div class="d-flex justify-content-center my-3">
+				<a href="listings.jsp" class="btn btn-primary">Browse All Listings</a>
+			</div>
 	  	<div class="input-group my-3">
 	      <input type="text" id="search-input" class="form-control" placeholder="Search..." onkeyup="searchFunction()">
 	      <button class="btn btn-primary" type="button">Search</button>

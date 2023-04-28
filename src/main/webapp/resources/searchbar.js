@@ -27,6 +27,16 @@ function searchFunction() {
 }
 
 function handleBidButtonClick(vehicleId, sellerId) {
-    // Do something with the vehicleId and sellerId, e.g., show a bid form or send a request to the server
     console.log("Bid button clicked for vehicle ID:", vehicleId, "and seller ID:", sellerId);
 }  
+
+function handleDeleteButtonClick(vehicleId, sellerId, dt) {
+    const xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function() {
+        if (this.readyState === 4 && this.status === 200) {
+            location.reload(); // Refresh the page after a successful delete
+        }
+    };
+    xhttp.open("GET", `delete.jsp?vehicle_id=${vehicleId}&seller_id=${encodeURIComponent(sellerId)}&dt=${encodeURIComponent(dt)}`, true);
+    xhttp.send();
+}

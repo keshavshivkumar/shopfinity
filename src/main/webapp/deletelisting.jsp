@@ -12,6 +12,7 @@
 
     HttpSession session1 = request.getSession();
     String userId = session1.getAttribute("user").toString();
+    int roleId = Integer.parseInt(session1.getAttribute("role_id").toString());
 
     Connection connection = null;
     PreparedStatement preparedStatement = null;
@@ -19,10 +20,18 @@
     try {
         Class.forName("com.mysql.jdbc.Driver");
         connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/shopfinity", "root", "");
-        preparedStatement = connection.prepareStatement("DELETE FROM Listings WHERE vehicle_id=? AND seller_id=? AND dt=?");
-        preparedStatement.setInt(1, vehicleId);
-        preparedStatement.setString(2, userId);
-        preparedStatement.setTimestamp(3, dtTimestamp);
+        
+        if (roleId < 3) {
+            preparedStatement = connection.prepareStatement("DELETE FROM Listings WHERE vehicle_id=? AND dt=?");
+            preparedStatement.setInt(1, vehicleId);
+            preparedStatement.setTimestamp(2, dtTimestamp);
+        } else {
+            preparedStatement = connection.prepareStatement("DELETE FROM Listings WHERE vehicle_id=? AND seller_id=? AND dt=?");
+            preparedStatement.setInt(1, vehicleId);
+            preparedStatement.setString(2, userId);
+            preparedStatement.setTimestamp(3, dtTimestamp);
+        }
+        
         preparedStatement.executeUpdate();
 
         response.sendRedirect("mylistings.jsp?deleted=success");
