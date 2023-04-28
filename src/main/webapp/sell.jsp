@@ -19,18 +19,6 @@
         HttpSession session1 = request.getSession();
         String listed = request.getParameter("listed");
     %>
-    <script>
-    let listed = "<%= listed %>";
-
-    if (listed === "confirm") {
-        if (confirm("The Vehicle ID already exists. Do you want to sell a unit of the existing vehicle?")) {
-            document.getElementById("confirmed").value = "true";
-            document.getElementById("listingForm").submit();
-        }
-    } else if (listed === "success") {
-        alert("Vehicle listed successfully");
-    }
-	</script>
 
     <header class="navbar navbar-expand-lg navbar-dark bg-primary py-3">
     <div class="container">
@@ -65,6 +53,16 @@
                             <% if ("license_plate_not_unique".equals(request.getParameter("error"))) { %>
                             <p style="color: red;">Error: License plate already exists. Please enter a unique license plate.</p>
                         	<% } %>
+                        	<% if ("success".equals(request.getParameter("listed"))) { %>
+    							<p id="success-message" style="color: green;">Vehicle listed successfully.</p>
+    							<script>
+        							setTimeout(function() {
+            						document.getElementById("success-message").style.display = "none";
+            						history.replaceState({}, "", "sell.jsp");
+        							}, 3000);
+    							</script>
+							<% } %>
+
                             <form action="createlisting.jsp" method="POST" id="listingForm">
                                 <div class="form-group">
                                     <label for="vehicle_name">Vehicle Name:</label>
