@@ -21,6 +21,7 @@
 
     HttpSession session1 = request.getSession();
     String buyerId = session.getAttribute("user").toString();
+    String redirectUrl = "";
 
     Connection connection = null;
     PreparedStatement preparedStatement = null;
@@ -92,14 +93,12 @@
                                     break;
                                 }
                             }
-
-                            
                             // Check which bidder's incremented bid is higher and update the Bids table
-                            if (newBidForCurrentHighest > newBidForNewBidder) {
-                                preparedStatement = connection.prepareStatement("UPDATE Bids SET bid_amount=? WHERE vehicle_id=? AND dt=? AND buyer_id=? AND license_plate=?");
+                            if (newBidForCurrentHighest > newBidForNewBidder || (newBidForCurrentHighest == newBidForNewBidder && currentHighestUpperLimit>upperLimit)) {
+                                preparedStatement = connection.prepareStatement("UPDATE Bids SET bid_amount=?, dt=? WHERE vehicle_id=? AND buyer_id=? AND license_plate=?");
                                 preparedStatement.setInt(1, newBidForCurrentHighest);
-                                preparedStatement.setInt(2, vehicleId);
-                                preparedStatement.setTimestamp(3, dtTimestamp);
+                                preparedStatement.setTimestamp(2, dtTimestamp);
+                                preparedStatement.setInt(3, vehicleId);
                                 preparedStatement.setString(4, currentHighestBuyerId);
                                 preparedStatement.setString(5, license);
                                 preparedStatement.executeUpdate();
@@ -109,6 +108,9 @@
                                 preparedStatement.setString(2, buyerId);
                                 preparedStatement.setString(3, license);
                                 preparedStatement.executeUpdate();
+                                redirectUrl="index.jsp?success";
+                            } else if (newBidForCurrentHighest == newBidForNewBidder && currentHighestUpperLimit==upperLimit){
+                            	redirectUrl="bidform.jsp?vehicle_id=" + vehicleId + "&bid=failure&exceptionMessage=upper?limit?too?low.";
                             } else {
                                 preparedStatement = connection.prepareStatement("INSERT INTO Bids (vehicle_id, dt, seller_id, buyer_id, upper_limit, bid_amount, license_plate) VALUES (?, ?, ?, ?, ?, ?, ?)");
                                 preparedStatement.setInt(1, vehicleId);
@@ -125,6 +127,7 @@
                                 preparedStatement.setString(2, currentHighestBuyerId);
                                 preparedStatement.setString(3, license);
                                 preparedStatement.executeUpdate();
+                                redirectUrl="index.jsp?success";
                             }
                         }
                     }
@@ -141,13 +144,13 @@
                     preparedStatement.setInt(6, bidAmount);
                     preparedStatement.setString(7, license);
                     preparedStatement.executeUpdate();
-                    
-                    
+                    redirectUrl="index.jsp?success";
                 }
-                response.sendRedirect("index.jsp?success");
+                
             } else {
-                response.sendRedirect("bidform.jsp?vehicle_id=" + vehicleId + "&dt=" + dateFormat.format(dtTimestamp) + "&bid_amount=" + bidAmount + "&bid=failure&exceptionMessage=Bid%20amount%20is%20less%20than%20the%20minimum%20price.");
+            	redirectUrl="bidform.jsp?vehicle_id=" + vehicleId + "&dt=" + dateFormat.format(dtTimestamp) + "&bid_amount=" + bidAmount + "&bid=failure&exceptionMessage=Bid%20amount%20is%20less%20than%20the%20minimum%20price.";
             }
+            response.sendRedirect(redirectUrl);
         }
 
         

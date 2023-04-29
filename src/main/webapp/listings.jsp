@@ -71,6 +71,7 @@
                     <th>Name</th>
                     <th>Listing Price</th>
                     <th>Time Left</th>
+                    <th>Current Bid</th>
                     <th>Bid</th>
                     <% if (Integer.parseInt(session1.getAttribute("role_id").toString()) < 3) { %>
                     <th>Action</th>
@@ -93,7 +94,7 @@
                     String username = props.getProperty("db.username");
                     String pswd = props.getProperty("db.password");
                     connection = DriverManager.getConnection(url, username, pswd);
-                    preparedStatement = connection.prepareStatement("SELECT v.vehicle_id, v.vehicle_name, v.vehicle_model, v.vehicle_type, l.seller_id, e.full_name, l.listing_price, l.dt, l.license_plate, CONCAT(TIMESTAMPDIFF(HOUR, NOW(), l.expiration_datetime), 'h ', TIMESTAMPDIFF(MINUTE, NOW(), l.expiration_datetime) % 60, 'm ', TIMESTAMPDIFF(SECOND, NOW(), l.expiration_datetime) % 60, 's') AS time_left FROM Vehicles AS v, Listings AS l, EndUsers as e WHERE v.vehicle_id=l.vehicle_id AND l.seller_id = e.email_id AND v.vehicle_id=l.vehicle_id AND l.expiration_datetime > NOW()");
+                    preparedStatement = connection.prepareStatement("SELECT v.vehicle_id, v.vehicle_name, v.vehicle_model, v.vehicle_type, l.seller_id, e.full_name, l.listing_price, l.dt, l.license_plate, CONCAT(TIMESTAMPDIFF(HOUR, NOW(), l.expiration_datetime), 'h ', TIMESTAMPDIFF(MINUTE, NOW(), l.expiration_datetime) % 60, 'm ', TIMESTAMPDIFF(SECOND, NOW(), l.expiration_datetime) % 60, 's') AS time_left, b.bid_amount FROM Vehicles AS v, Listings AS l, EndUsers as e, Bids as b WHERE v.vehicle_id=l.vehicle_id AND l.seller_id = e.email_id AND v.vehicle_id=l.vehicle_id AND l.expiration_datetime > NOW() AND l.license_plate = b.license_plate");
 
                     resultSet = preparedStatement.executeQuery();
 
@@ -106,6 +107,7 @@
                     <td><%= resultSet.getString("full_name") %></td>
                     <td><%= resultSet.getDouble("listing_price") %></td>
                     <td><%= resultSet.getString("time_left") %></td>
+                    <td><%= resultSet.getInt("bid_amount") %></td>
                     <td>
 					    <% if (session1.getAttribute("loggedIn") != null && (Boolean) session1.getAttribute("loggedIn")) { %>
 					        <form action="bidform.jsp" method="POST">
