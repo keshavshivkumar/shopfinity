@@ -34,6 +34,13 @@
             <a href="index.jsp" class="navbar-brand text-decoration-none">
                 <h1 class="text-white">ShopFinity</h1>
             </a>
+            <div class="navbar-text text-white">
+            <% if (session1.getAttribute("user") != null) { %>
+                <small>Hello <%= session1.getAttribute("user") %>!</small>
+            <% } else { %>
+                <small>Hello Guest!</small>
+            <% } %>
+        	</div>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -43,6 +50,16 @@
                     	if (session1.getAttribute("role_id").equals(1)){%>
                     	<li class="nav-item">
                             <a href="reps.jsp" class="nav-link">Representatives</a>
+                        </li>
+                        <% } 
+                        if (session1.getAttribute("role_id").equals(2)){%>
+                        <li class="nav-item">
+                            <a href="answerquestions.jsp" class="nav-link">Answer Questions</a>
+                        </li>
+                        <% } 
+                        if (session1.getAttribute("role_id").equals(3)){%>
+                        <li class="nav-item">
+                            <a href="askquestions.jsp" class="nav-link">Ask Questions</a>
                         </li>
                         <% } %>
                         <li class="nav-item">

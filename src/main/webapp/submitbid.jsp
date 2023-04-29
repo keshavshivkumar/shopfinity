@@ -75,29 +75,25 @@
                             boolean currentHighestReachedLimit = false;
                             boolean newBidderReachedLimit = false;
 
-                            while (!currentHighestReachedLimit || !newBidderReachedLimit) {
-                                if (!currentHighestReachedLimit && newBidForCurrentHighest + minInc <= currentHighestUpperLimit) {
+                            while (true) {
+                                if (!currentHighestReachedLimit && newBidForCurrentHighest + minInc <= currentHighestUpperLimit && newBidForCurrentHighest <= newBidForNewBidder) {
                                     newBidForCurrentHighest += minInc;
                                 } else {
                                     currentHighestReachedLimit = true;
                                 }
 
-                                if (!newBidderReachedLimit && newBidForNewBidder + minInc <= upperLimit) {
+                                if (!newBidderReachedLimit && newBidForNewBidder + minInc <= upperLimit && newBidForNewBidder <= newBidForCurrentHighest) {
                                     newBidForNewBidder += minInc;
                                 } else {
                                     newBidderReachedLimit = true;
                                 }
 
-                                if (currentHighestReachedLimit && !newBidderReachedLimit) {
-                                    newBidForNewBidder = Math.min(newBidForNewBidder + minInc, upperLimit);
-                                    break;
-                                } else if (!currentHighestReachedLimit && newBidderReachedLimit) {
-                                    newBidForCurrentHighest = Math.min(newBidForCurrentHighest + minInc, currentHighestUpperLimit);
+                                if (currentHighestReachedLimit && newBidderReachedLimit) {
                                     break;
                                 }
                             }
 
-                            response.sendRedirect("index.jsp?success"+newBidForCurrentHighest+"?"+newBidForNewBidder);
+                            
                             // Check which bidder's incremented bid is higher and update the Bids table
                             if (newBidForCurrentHighest > newBidForNewBidder) {
                                 preparedStatement = connection.prepareStatement("UPDATE Bids SET bid_amount=? WHERE vehicle_id=? AND dt=? AND buyer_id=? AND license_plate=?");
@@ -145,8 +141,10 @@
                     preparedStatement.setInt(6, bidAmount);
                     preparedStatement.setString(7, license);
                     preparedStatement.executeUpdate();
+                    
+                    
                 }
-                
+                response.sendRedirect("index.jsp?success");
             } else {
                 response.sendRedirect("bidform.jsp?vehicle_id=" + vehicleId + "&dt=" + dateFormat.format(dtTimestamp) + "&bid_amount=" + bidAmount + "&bid=failure&exceptionMessage=Bid%20amount%20is%20less%20than%20the%20minimum%20price.");
             }

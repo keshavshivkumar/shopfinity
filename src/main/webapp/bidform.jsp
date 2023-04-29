@@ -25,6 +25,13 @@
         <a href="index.jsp" class="navbar-brand text-decoration-none">
             <h1 class="text-white">ShopFinity</h1>
         </a>
+        <div class="navbar-text text-white">
+            <% if (session1.getAttribute("user") != null) { %>
+                <small>Hello <%= session1.getAttribute("user") %>!</small>
+            <% } else { %>
+                <small>Hello Guest!</small>
+            <% } %>
+        </div>
         <nav class="navbar-nav ms-auto">
             <% if (session1.getAttribute("loggedIn") != null && (Boolean) session1.getAttribute("loggedIn")) { %>
                 <li class="nav-item">

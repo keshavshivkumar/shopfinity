@@ -24,6 +24,13 @@
             <a href="index.jsp" class="navbar-brand text-decoration-none">
                 <h1 class="text-white">ShopFinity</h1>
             </a>
+            <div class="navbar-text text-white">
+            <% if (session1.getAttribute("user") != null) { %>
+                <small>Hello <%= session1.getAttribute("user") %>!</small>
+            <% } else { %>
+                <small>Hello Guest!</small>
+            <% } %>
+        	</div>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>

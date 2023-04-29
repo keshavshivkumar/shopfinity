@@ -23,6 +23,7 @@
             <a href="index.jsp" class="navbar-brand text-decoration-none">
                 <h1 class="text-white">ShopFinity</h1>
             </a>
+            
         </div>
     </div>
 </header>
