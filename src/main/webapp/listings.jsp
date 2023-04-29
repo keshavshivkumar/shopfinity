@@ -94,7 +94,7 @@
                     String username = props.getProperty("db.username");
                     String pswd = props.getProperty("db.password");
                     connection = DriverManager.getConnection(url, username, pswd);
-                    preparedStatement = connection.prepareStatement("SELECT v.vehicle_id, v.vehicle_name, v.vehicle_model, v.vehicle_type, l.seller_id, e.full_name, l.listing_price, l.dt, l.license_plate, CONCAT(TIMESTAMPDIFF(HOUR, NOW(), l.expiration_datetime), 'h ', TIMESTAMPDIFF(MINUTE, NOW(), l.expiration_datetime) % 60, 'm ', TIMESTAMPDIFF(SECOND, NOW(), l.expiration_datetime) % 60, 's') AS time_left, b.bid_amount FROM Vehicles AS v, Listings AS l, EndUsers as e, Bids as b WHERE v.vehicle_id=l.vehicle_id AND l.seller_id = e.email_id AND v.vehicle_id=l.vehicle_id AND l.expiration_datetime > NOW() AND l.license_plate = b.license_plate");
+                    preparedStatement = connection.prepareStatement("SELECT v.vehicle_id, v.vehicle_name, v.vehicle_model, v.vehicle_type, l.seller_id, e.full_name, l.listing_price, l.dt, l.license_plate, CONCAT(TIMESTAMPDIFF(HOUR, NOW(), l.expiration_datetime), 'h ', TIMESTAMPDIFF(MINUTE, NOW(), l.expiration_datetime) % 60, 'm ', TIMESTAMPDIFF(SECOND, NOW(), l.expiration_datetime) % 60, 's') AS time_left, b.bid_amount FROM Vehicles AS v JOIN Listings AS l ON v.vehicle_id=l.vehicle_id JOIN EndUsers as e ON l.seller_id = e.email_id LEFT JOIN Bids as b ON l.vehicle_id = b.vehicle_id AND l.license_plate = b.license_plate WHERE l.expiration_datetime > NOW()");
 
                     resultSet = preparedStatement.executeQuery();
 
