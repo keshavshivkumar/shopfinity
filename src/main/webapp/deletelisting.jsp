@@ -2,6 +2,7 @@
 <%@ page import="java.io.*" %>
 <%@ page contentType="text/html; charset=UTF-8" %>
 <%@ page import="java.text.SimpleDateFormat" %>
+<%@ page import="java.util.Properties" %>
 
 <%
     int vehicleId = Integer.parseInt(request.getParameter("vehicle_id"));
@@ -20,7 +21,14 @@
 
     try {
         Class.forName("com.mysql.jdbc.Driver");
-        connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/shopfinity", "root", "");
+        Properties props = new Properties();
+        FileInputStream in = new FileInputStream(getServletContext().getRealPath("/resources/database.properties"));
+        props.load(in);
+        in.close();
+        String url = props.getProperty("db.url");
+        String username = props.getProperty("db.username");
+        String pswd = props.getProperty("db.password");
+        connection = DriverManager.getConnection(url, username, pswd);
         
         if (roleId < 3) {
             preparedStatement = connection.prepareStatement("DELETE FROM Listings WHERE vehicle_id=? AND dt=?");

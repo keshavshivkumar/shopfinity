@@ -2,16 +2,20 @@
 <%@ page import="java.io.*" %>
 <%@ page contentType="text/html; charset=UTF-8" %>
 <%@ page import="java.text.SimpleDateFormat" %>
+<%@ page import="java.util.Properties" %>
 
 <%
     try {
         HttpSession session1 = request.getSession();
-        String connectionURL = "jdbc:mysql://localhost:3306/shopfinity";
-        String username = "root";
-        String password = "";
-
+        Properties props = new Properties();
+        FileInputStream in = new FileInputStream(getServletContext().getRealPath("/resources/database.properties"));
+        props.load(in);
+        in.close();
+        String url = props.getProperty("db.url");
+        String username = props.getProperty("db.username");
+        String pswd = props.getProperty("db.password");
         Class.forName("com.mysql.jdbc.Driver");
-        Connection con = DriverManager.getConnection(connectionURL, username, password);
+        Connection con = DriverManager.getConnection(url, username, pswd);
 
         String vehicleName = request.getParameter("vehicle_name");
         String vehicleModel = request.getParameter("vehicle_model");

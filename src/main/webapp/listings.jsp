@@ -2,6 +2,7 @@
 <%@ page import="java.io.*" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ page import="java.util.Properties" %>
 
 <c:set var="contextPath" value="${pageContext.request.contextPath}"/>
 
@@ -69,7 +70,14 @@
 
                 try {
                     Class.forName("com.mysql.jdbc.Driver");
-                    connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/shopfinity", "root", "");
+                    Properties props = new Properties();
+                    FileInputStream in = new FileInputStream(getServletContext().getRealPath("/resources/database.properties"));
+                    props.load(in);
+                    in.close();
+                    String url = props.getProperty("db.url");
+                    String username = props.getProperty("db.username");
+                    String pswd = props.getProperty("db.password");
+                    connection = DriverManager.getConnection(url, username, pswd);
                     preparedStatement = connection.prepareStatement("SELECT v.vehicle_id, v.vehicle_name, v.vehicle_model, v.vehicle_type, l.seller_id, e.full_name, l.listing_price, l.dt, l.license_plate, CONCAT(TIMESTAMPDIFF(HOUR, NOW(), l.expiration_datetime), 'h ', TIMESTAMPDIFF(MINUTE, NOW(), l.expiration_datetime) % 60, 'm ', TIMESTAMPDIFF(SECOND, NOW(), l.expiration_datetime) % 60, 's') AS time_left FROM Vehicles AS v, Listings AS l, EndUsers as e WHERE v.vehicle_id=l.vehicle_id AND l.seller_id = e.email_id AND v.vehicle_id=l.vehicle_id");
 
                     resultSet = preparedStatement.executeQuery();

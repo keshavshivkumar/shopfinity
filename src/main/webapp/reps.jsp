@@ -2,6 +2,7 @@
 <%@ page import="java.io.*" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ page import="java.util.Properties" %>
 
 <c:set var="contextPath" value="${pageContext.request.contextPath}"/>
 
@@ -57,12 +58,18 @@
                 </thead>
                 <tbody>
                     <%
-                        String connectionURL = "jdbc:mysql://localhost:3306/shopfinity";
                         Connection connection = null;
                         ResultSet rs = null;
                         Statement statement = null;
                         Class.forName("com.mysql.jdbc.Driver");
-                        connection = DriverManager.getConnection(connectionURL, "root", "");
+                        Properties props = new Properties();
+                        FileInputStream in = new FileInputStream(getServletContext().getRealPath("/resources/database.properties"));
+                        props.load(in);
+                        in.close();
+                        String url = props.getProperty("db.url");
+                        String username = props.getProperty("db.username");
+                        String pswd = props.getProperty("db.password");  
+                        connection = DriverManager.getConnection(url, username, pswd);
                         statement = connection.createStatement();
                         String query = "SELECT * FROM EndUsers WHERE role_id=2";
                         rs = statement.executeQuery(query);

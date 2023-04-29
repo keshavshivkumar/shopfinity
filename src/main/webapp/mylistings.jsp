@@ -2,6 +2,7 @@
 <%@ page import="java.io.*" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ page import="java.util.Properties" %>
 
 <c:set var="contextPath" value="${pageContext.request.contextPath}"/>
 
@@ -69,7 +70,14 @@
 
                 try {
                     Class.forName("com.mysql.jdbc.Driver");
-                    connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/shopfinity", "root", "");
+                    Properties props = new Properties();
+                    FileInputStream in = new FileInputStream(getServletContext().getRealPath("/resources/database.properties"));
+                    props.load(in);
+                    in.close();
+                    String url = props.getProperty("db.url");
+                    String username = props.getProperty("db.username");
+                    String pswd = props.getProperty("db.password");
+                    connection = DriverManager.getConnection(url, username, pswd);
                     preparedStatement = connection.prepareStatement("SELECT V.vehicle_id, V.vehicle_name, V.vehicle_model, V.vehicle_type, L.listing_price, L.license_plate, L.min_price, L.min_inc, L.dt FROM Listings L INNER JOIN Vehicles V ON L.vehicle_id = V.vehicle_id WHERE L.seller_id = ?");
 
                     preparedStatement.setString(1, userId);

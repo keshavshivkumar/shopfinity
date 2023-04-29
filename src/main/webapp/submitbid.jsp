@@ -3,6 +3,7 @@
 <%@ page import="java.text.SimpleDateFormat" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ page import="java.util.Properties" %>
 
 <c:set var="contextPath" value="${pageContext.request.contextPath}"/>
 <!DOCTYPE html>
@@ -39,7 +40,14 @@
     try {
     	
         Class.forName("com.mysql.jdbc.Driver");
-        connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/shopfinity", "root", "");
+        Properties props = new Properties();
+        FileInputStream in = new FileInputStream(getServletContext().getRealPath("/resources/database.properties"));
+        props.load(in);
+        in.close();
+        String url = props.getProperty("db.url");
+        String username = props.getProperty("db.username");
+        String pswd = props.getProperty("db.password");
+        connection = DriverManager.getConnection(url, username, pswd);
         
         // Check if the bid amount is greater than or equal to the minimum price
         preparedStatement = connection.prepareStatement("SELECT min_price, min_inc FROM Listings WHERE vehicle_id=? AND license_plate=?");
