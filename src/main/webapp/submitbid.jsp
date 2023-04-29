@@ -16,9 +16,18 @@
     java.util.Date currentDate = new java.util.Date();
     java.sql.Timestamp dtTimestamp = new java.sql.Timestamp(currentDate.getTime());
 
-    int bidAmount = Integer.parseInt(request.getParameter("bid_amount"));
-    int upperLimit = Integer.parseInt(request.getParameter("upper_limit"));
+    //int bidAmount = Integer.parseInt(request.getParameter("bid_amount"));
+    //int upperLimit = Integer.parseInt(request.getParameter("upper_limit"));
 
+    String upperLimitStr = request.getParameter("upper_limit");
+    int bidAmount = Integer.parseInt(request.getParameter("bid_amount"));
+    int upperLimit;
+
+    if (upperLimitStr != null && !upperLimitStr.isEmpty()) {
+        upperLimit = Integer.parseInt(upperLimitStr);
+    } else {
+        upperLimit = bidAmount;
+    }
     HttpSession session1 = request.getSession();
     String buyerId = session.getAttribute("user").toString();
     String redirectUrl = "";
