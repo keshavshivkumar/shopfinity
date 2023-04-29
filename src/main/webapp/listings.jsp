@@ -68,6 +68,7 @@
                     <th>Vehicle Name</th>
                     <th>Vehicle Model</th>
                     <th>Vehicle Type</th>
+                    <th>License Plate</th>
                     <th>Name</th>
                     <th>Listing Price</th>
                     <th>Time Left</th>
@@ -104,6 +105,7 @@
                     <td><%= resultSet.getString("vehicle_name") %></td>
                     <td><%= resultSet.getString("vehicle_model") %></td>
 					<td><%= resultSet.getString("vehicle_type") %></td>
+					<td><%= resultSet.getString("license_plate") %></td>
                     <td><%= resultSet.getString("full_name") %></td>
                     <td><%= resultSet.getDouble("listing_price") %></td>
                     <td><%= resultSet.getString("time_left") %></td>
@@ -124,6 +126,7 @@
 					    <td>
 					        <form action="deletelisting.jsp" method="POST">
 					            <input type="hidden" name="vehicle_id" value="<%= resultSet.getInt("vehicle_id") %>">
+					            <input type="hidden" name="license_plate" value="<%= resultSet.getString("license_plate") %>">
 					            <input type="hidden" name="dt" value="<%= resultSet.getTimestamp("dt") %>">
 					            <input type="hidden" name="redirectpage" value="listings.jsp">
 					            <button type="submit" class="btn btn-danger">Delete</button>

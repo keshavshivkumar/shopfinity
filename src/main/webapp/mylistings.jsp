@@ -73,6 +73,8 @@
                     <th>Listing Price</th>
                     <th>Minimum Price</th>
                     <th>Minimum Increment</th>
+                    <th>Time Left</th>
+                    <th>Current Bid</th>
                     <th>Action</th>
                 </tr>
             </thead>
@@ -93,7 +95,9 @@
                     String username = props.getProperty("db.username");
                     String pswd = props.getProperty("db.password");
                     connection = DriverManager.getConnection(url, username, pswd);
-                    preparedStatement = connection.prepareStatement("SELECT V.vehicle_id, V.vehicle_name, V.vehicle_model, V.vehicle_type, L.listing_price, L.license_plate, L.min_price, L.min_inc, L.dt FROM Listings L INNER JOIN Vehicles V ON L.vehicle_id = V.vehicle_id WHERE L.seller_id = ?");
+                    preparedStatement = connection.prepareStatement("SELECT V.vehicle_id, V.vehicle_name, V.vehicle_model, V.vehicle_type, L.listing_price, L.license_plate, L.min_price, L.min_inc, L.dt, B.bid_amount, CONCAT(TIMESTAMPDIFF(HOUR, NOW(), L.expiration_datetime), 'h ', TIMESTAMPDIFF(MINUTE, NOW(), L.expiration_datetime) % 60, 'm ', TIMESTAMPDIFF(SECOND, NOW(), L.expiration_datetime) % 60, 's') AS time_left FROM Listings L INNER JOIN Vehicles V ON L.vehicle_id = V.vehicle_id LEFT JOIN Bids B ON L.vehicle_id = B.vehicle_id AND L.license_plate = B.license_plate WHERE L.seller_id = ?");
+
+
 
                     preparedStatement.setString(1, userId);
                     resultSet = preparedStatement.executeQuery();
@@ -109,9 +113,12 @@
                         <td><%= resultSet.getDouble("listing_price") %></td>
                         <td><%= resultSet.getDouble("min_price") %></td>
                         <td><%= resultSet.getDouble("min_inc") %></td>
+                        <td><%= resultSet.getString("time_left") %></td>
+                        <td><%= resultSet.getInt("bid_amount") %></td>
                         <td>
                             <form action="deletelisting.jsp" method="POST">
                                 <input type="hidden" name="vehicle_id" value="<%= resultSet.getInt("vehicle_id") %>">
+                                <input type="hidden" name="license_plate" value="<%= resultSet.getString("license_plate") %>">
                                 <input type="hidden" name="dt" value="<%= resultSet.getTimestamp("dt") %>">
                                 <button type="submit" class="btn btn-danger">Delete</button>
                             </form>

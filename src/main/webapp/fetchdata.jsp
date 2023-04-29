@@ -50,7 +50,7 @@
             out.println("<tr><td>" + rs.getString("vehicle_name") + "</td><td>" + rs.getString("vehicle_model") + "</td><td>" + rs.getString("vehicle_type") + "</td><td>" + rs.getString("license_plate") + "</td><td>" + rs.getString("full_name")+ "</td><td>" + rs.getString("listing_price") + "</td><td>" + rs.getString("time_left") + "</td><td>" + rs.getInt("bid_amount") + "</td><td><form action='bidform.jsp' method='POST'><input type='hidden' name='seller_id' value='" + rs.getString("seller_id") + "'><input type='hidden' name='vehicle_id' value='" + rs.getInt("vehicle_id") + "'><input type='hidden' name='license_plate' value='" + rs.getString("license_plate") + "'><input type='hidden' name='dt' value='" + rs.getTimestamp("dt") + "'><button type='submit' class='btn-primary'>Bid</button></form></td>");
             
             if (roleId < 3) {
-                out.println("<td><form action='deletelisting.jsp' method='POST'><input type='hidden' name='vehicle_id' value='" + rs.getInt("vehicle_id") + "'><input type='hidden' name='dt' value='" + rs.getTimestamp("dt") + "'><button type='submit' class='btn btn-danger'>Delete</button></form></td>");
+                out.println("<td><form action='deletelisting.jsp' method='POST'><input type='hidden' name='vehicle_id' value='" + rs.getInt("vehicle_id") + "'><input type='hidden' name='dt' value='" + rs.getTimestamp("dt") + "'><input type='hidden' name='license_plate' value='" + rs.getString("license_plate") + "'><button type='submit' class='btn btn-danger'>Delete</button></form></td>");
             }
             out.println("</tr>");
         }

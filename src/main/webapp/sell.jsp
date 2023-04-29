@@ -108,9 +108,9 @@
                                     <input type="number" id="min_inc" name="min_inc" class="form-control" required>
                                 </div>
                                 <div class="form-group">
-                                    <label for="exp_date">Expiration Date:</label>
-                                    <input type="date" id="exp_date" name="exp_date" class="form-control" required>
-                                </div>
+								    <label for="exp_datetime">Expiration Date and Time:</label>
+								    <input type="datetime-local" id="exp_datetime" name="exp_datetime" class="form-control" required>
+								</div>
                                 <input type="hidden" id="confirmed" name="confirmed" value="false">
                                 <div class="text-center">
                                     <input type="submit" value="Submit" class="btn btn-primary">

@@ -23,11 +23,12 @@
         int listingPrice = Integer.parseInt(request.getParameter("listing_price"));
         int minPrice = Integer.parseInt(request.getParameter("min_price"));
         int minInc = Integer.parseInt(request.getParameter("min_inc"));
-        String expDate = request.getParameter("exp_date");
+        String expDateTime = request.getParameter("exp_datetime");
         String licensePlate = request.getParameter("license_plate");
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        java.util.Date parsedDate = dateFormat.parse(expDate);
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm");
+        java.util.Date parsedDate = dateFormat.parse(expDateTime);
         java.sql.Timestamp expirationTimestamp = new java.sql.Timestamp(parsedDate.getTime());
+
 
         // Check for unique license plate
         String checkLicensePlateQuery = "SELECT license_plate FROM Listings WHERE license_plate = ?";

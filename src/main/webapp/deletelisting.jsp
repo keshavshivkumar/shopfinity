@@ -6,6 +6,7 @@
 
 <%
     int vehicleId = Integer.parseInt(request.getParameter("vehicle_id"));
+    String licensePlate = request.getParameter("license_plate");
     String dt = request.getParameter("dt");
     SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
     java.util.Date parsedDate = dateFormat.parse(dt);
@@ -17,7 +18,8 @@
     int roleId = Integer.parseInt(session1.getAttribute("role_id").toString());
 
     Connection connection = null;
-    PreparedStatement preparedStatement = null;
+    PreparedStatement preparedStatementListing = null;
+    PreparedStatement preparedStatementBids = null;
 
     try {
         Class.forName("com.mysql.jdbc.Driver");
@@ -30,30 +32,37 @@
         String pswd = props.getProperty("db.password");
         connection = DriverManager.getConnection(url, username, pswd);
         
+        // Delete bids related to the vehicle_id and license_plate
+        preparedStatementBids = connection.prepareStatement("DELETE FROM Bids WHERE vehicle_id=? AND license_plate=?");
+        preparedStatementBids.setInt(1, vehicleId);
+        preparedStatementBids.setString(2, licensePlate);
+        preparedStatementBids.executeUpdate();
+
         if (roleId < 3) {
-            preparedStatement = connection.prepareStatement("DELETE FROM Listings WHERE vehicle_id=? AND dt=?");
-            preparedStatement.setInt(1, vehicleId);
-            preparedStatement.setTimestamp(2, dtTimestamp);
+            preparedStatementListing = connection.prepareStatement("DELETE FROM Listings WHERE vehicle_id=? AND dt=?");
+            preparedStatementListing.setInt(1, vehicleId);
+            preparedStatementListing.setTimestamp(2, dtTimestamp);
             redirect = request.getParameter("redirectpage");
             if (redirect == null){
             	redirect = "index.jsp";
             }
         } else {
-            preparedStatement = connection.prepareStatement("DELETE FROM Listings WHERE vehicle_id=? AND seller_id=? AND dt=?");
-            preparedStatement.setInt(1, vehicleId);
-            preparedStatement.setString(2, userId);
-            preparedStatement.setTimestamp(3, dtTimestamp);
+            preparedStatementListing = connection.prepareStatement("DELETE FROM Listings WHERE vehicle_id=? AND seller_id=? AND dt=?");
+            preparedStatementListing.setInt(1, vehicleId);
+            preparedStatementListing.setString(2, userId);
+            preparedStatementListing.setTimestamp(3, dtTimestamp);
             redirect = "mylistings.jsp";
         }
         
-        preparedStatement.executeUpdate();
+        preparedStatementListing.executeUpdate();
 
         response.sendRedirect(redirect+"?deleted=success");
     } catch (Exception e) {
         e.printStackTrace();
         response.sendRedirect(redirect+"?deleted=failure");
     } finally {
-        if (preparedStatement != null) preparedStatement.close();
+        if (preparedStatementListing != null) preparedStatementListing.close();
+        if (preparedStatementBids != null) preparedStatementBids.close();
         if (connection != null) connection.close();
     }
 %>
