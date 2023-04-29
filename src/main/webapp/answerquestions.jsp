@@ -37,6 +37,7 @@
                 <li class="nav-item">
                             <a href="mylistings.jsp" class="nav-link">My Listings</a>
                 </li>
+                
                 <li class="nav-item">
                     <a href="sell.jsp" class="nav-link">Sell</a>
                 </li>
@@ -55,8 +56,14 @@
   <div class="row">
     <div class="col-md-12">
       <h2 class="text-center mt-4 mb-3">Unanswered Questions</h2>
+      <% if (request.getParameter("error") != null && request.getParameter("error").equals("invalid")) { %>
+    <div class="alert alert-danger">
+        <strong>Error:</strong> <%= request.getParameter("errorMessage") %>
+    </div>
+		<% } %>
+      
 
-      <% if (session.getAttribute("loggedIn") != null && (Boolean) session.getAttribute("loggedIn") && (Integer) session.getAttribute("role_id") == 2) { %>
+      <% if (session1.getAttribute("loggedIn") != null && (Boolean) session1.getAttribute("loggedIn") && (Integer) session1.getAttribute("role_id") == 2) { %>
 
         <table class="table table-bordered table-hover">
           <thead>
@@ -119,7 +126,7 @@
               <div class="modal-body">
                 <form id="answerForm" action="submitanswer.jsp" method="POST">
                   <input type="hidden" name="question_id" id="question_id">
-                  <input type="hidden" name="rep_id" value="<%= session.getAttribute("user_id") %>">
+                  <input type="hidden" name="rep_id" value="<%= session1.getAttribute("user") %>">
 
                   <div class="form-group">
                     <label for="answer">Answer:</label>

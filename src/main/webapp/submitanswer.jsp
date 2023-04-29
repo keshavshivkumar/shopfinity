@@ -2,6 +2,7 @@
 <%@ page import="java.io.*" %>
 <%@ page contentType="text/html; charset=UTF-8" %>
 <%@ page import="java.util.Properties" %>
+<%@ page import="java.net.URLEncoder" %>
 
 
 <%
@@ -41,7 +42,7 @@
     response.sendRedirect("answerquestions.jsp?submit=success");
   } catch (Exception e) {
 	  
-	  e.printStackTrace();
-    response.sendRedirect("answerquestions.jsp?error=invalid");
+	    String errorMessage = URLEncoder.encode(e.getMessage(), "UTF-8");
+	    response.sendRedirect("answerquestions.jsp?error=invalid&errorMessage=" + errorMessage);
   }
 %>

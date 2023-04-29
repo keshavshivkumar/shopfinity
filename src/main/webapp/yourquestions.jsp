@@ -2,6 +2,7 @@
 <%@ page import="java.io.*" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ page import="java.util.Properties" %>
 
 <c:set var="contextPath" value="${pageContext.request.contextPath}"/>
 
@@ -18,16 +19,6 @@
 <body>
 	<%
 		HttpSession session1 = request.getSession();
-		String login = request.getParameter("login");
-		if (login != null && login.equals("success")) {
-	        if ((Boolean) session1.getAttribute("loggedIn") == true){
-	        	 session1.setAttribute("loginMessage", null);
-	        }
-	        else if ((Boolean) session1.getAttribute("loggedIn")==false) {
-	        	session1.setAttribute("loggedIn", true);
-	        	session1.setAttribute("loginMessage", "Successfully logged in!");
-	        }
-	    }
 		%>
 		<header class="navbar navbar-expand-lg navbar-dark bg-primary py-3">
         <div class="container">
@@ -61,9 +52,6 @@
                         <li class="nav-item">
                             <a href="askquestions.jsp" class="nav-link">Ask Questions</a>
                         </li>
-                        <li class="nav-item">
-                            <a href="yourquestions.jsp" class="nav-link">Your Questions</a>
-                        </li>
                         <% } %>
                         <li class="nav-item">
                             <a href="mylistings.jsp" class="nav-link">My Listings</a>
@@ -83,26 +71,64 @@
             </div>
         </div>
     </header>
-	<%
-		String loginMessage = "";
-	    loginMessage = (String) session1.getAttribute("loginMessage");
-	    if (loginMessage != null) {
-	        out.println("<div class='alert alert-info mt-3'>" + loginMessage + "</div>");
-	        session1.setAttribute("loginMessage", null);
-	    }
-	%>
-	<% if (session1.getAttribute("loggedIn") != null && (Boolean) session1.getAttribute("loggedIn")) { %>
-	  <div class="container">
-			<div class="d-flex justify-content-center my-3">
-				<a href="listings.jsp" class="btn btn-primary">Browse All Listings</a>
-			</div>
-	  	<div class="input-group my-3">
-	      <input type="text" id="search-input" class="form-control" placeholder="Search..." onkeyup="searchFunction()">
-	      <button class="btn btn-primary" type="button">Search</button>
-	    </div>
-	    <ul id="search-results" class="list-unstyled"></ul>
-	  </div>
-	<% } %>
-<script src="${contextPath}/resources/searchbar.js"></script>
-</body> 
-</html>
+    <div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <h2 class="text-center mt-4 mb-3">Your Questions</h2>
+
+            <table class="table table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th>Question</th>
+                        <th>Answer</th>
+                        <th>Representative ID</th>
+                        <th>Asked Datetime</th>
+                        <th>Answered Datetime</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <%
+                        String user_id = (String) session1.getAttribute("user");
+
+                        // Load the MySQL driver
+                        Class.forName("com.mysql.jdbc.Driver");
+
+                        // Connect to the database
+                        Properties props = new Properties();
+                        FileInputStream in = new FileInputStream(getServletContext().getRealPath("/resources/database.properties"));
+                        props.load(in);
+                        in.close();
+                        String url = props.getProperty("db.url");
+                        String username = props.getProperty("db.username");
+                        String pswd = props.getProperty("db.password");
+                        Connection conn = DriverManager.getConnection(url, username, pswd);
+
+                        // Prepare the SQL query
+                        String query = "SELECT * FROM Questions WHERE customer_id = ?";
+                        PreparedStatement ps = conn.prepareStatement(query);
+                        ps.setString(1, user_id);
+
+                        // Execute the query
+                        ResultSet rs = ps.executeQuery();
+
+                        // Iterate through the result set and display the questions and answers
+                        while (rs.next()) {
+                    %>
+                    <tr>
+                        <td><%= rs.getString("question") %></td>
+                        <td><%= rs.getString("answer") != null ? rs.getString("answer") : "Not Answered" %></td>
+                        <td><%= rs.getString("representative_id") != null ? rs.getString("representative_id") : "Not Answered" %></td>
+                        <td><%= rs.getTimestamp("asked_datetime") %></td>
+                        <td><%= rs.getTimestamp("answered_datetime") %></td>
+                    </tr>
+                    <%
+                        }
+                        // Close the database connection
+                        conn.close();
+                    %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+</body>
