@@ -112,37 +112,147 @@
             	preparedStatement = connection.prepareStatement("SELECT SUM(final_bid) as total_earnings FROM Listings WHERE sold = 1");
             	resultSet = preparedStatement.executeQuery();
 
-            	if (resultSet.next()) {
-            	    int totalEarnings = resultSet.getInt("total_earnings");
-            	    out.println("<h2>Total Earnings</h2>");
-            	    out.println("<p>" + totalEarnings + "</p>");
-            	} else {
-            	    out.println("Error generating the Total Earnings report.");
-            	}
+            	if (resultSet.next()) { %>
+                <div class="card text-center mt-4">
+                    <div class="card-header">
+                        <h2>Total Earnings</h2>
+                    </div>
+                    <div class="card-body">
+                        <h3 class="card-title"><%= resultSet.getInt("total_earnings") %></h3>
+                    </div>
+                </div>
+	            <% } else { %>
+	                <div class="alert alert-danger mt-4" role="alert">
+	                    Error generating the Total Earnings report.
+	                </div>
+	            <% }
             	
-                PreparedStatement earningsPerItemStatement = connection.prepareStatement("SELECT v.vehicle_id, v.vehicle_name, v.vehicle_model, SUM(l.final_bid) as total_earnings FROM Listings l INNER JOIN Vehicles v ON l.vehicle_id = v.vehicle_id WHERE l.sold = 1 GROUP BY v.vehicle_id, v.vehicle_name, v.vehicle_model;");
+                PreparedStatement earningsPerItemStatement = connection.prepareStatement("SELECT v.vehicle_name, v.vehicle_model, SUM(l.final_bid) as total_earnings FROM Listings l INNER JOIN Vehicles v ON l.vehicle_id = v.vehicle_id WHERE l.sold = 1 GROUP BY v.vehicle_id, v.vehicle_name, v.vehicle_model;");
                 ResultSet earningsPerItemResultSet = earningsPerItemStatement.executeQuery();
 	            %>
 	
 	            <h2>Earnings Per Item</h2>
-	            <table border="1">
-	                <tr>
-	                    <th>Vehicle ID</th>
-	                    <th>Vehicle Name</th>
-	                    <th>Vehicle Model</th>
-	                    <th>Total Earnings</th>
-	                </tr>
-	                <% while (earningsPerItemResultSet.next()) { %>
-	                    <tr>
-	                        <td><%= earningsPerItemResultSet.getInt("vehicle_id") %></td>
-	                        <td><%= earningsPerItemResultSet.getString("vehicle_name") %></td>
-	                        <td><%= earningsPerItemResultSet.getString("vehicle_model") %></td>
-	                        <td><%= earningsPerItemResultSet.getInt("total_earnings") %></td>
-	                    </tr>
-	                <% } %>
-	            </table>
-	            <%
+				<table class="table table-striped table-hover">
+				    <thead>
+				        <tr>
+				            <th scope="col">Vehicle Name</th>
+				            <th scope="col">Vehicle Model</th>
+				            <th scope="col">Total Earnings</th>
+				        </tr>
+				    </thead>
+				    <tbody>
+				        <% while (earningsPerItemResultSet.next()) { %>
+				            <tr>
+				                <td><%= earningsPerItemResultSet.getString("vehicle_name") %></td>
+				                <td><%= earningsPerItemResultSet.getString("vehicle_model") %></td>
+				                <td><%= earningsPerItemResultSet.getInt("total_earnings") %></td>
+				            </tr>
+				        <% } %>
+				    </tbody>
+				</table>
+	            <%	
+	         		// Earnings per vehicle_type
+				    PreparedStatement earningsPerTypeStatement = connection.prepareStatement("SELECT v.vehicle_type, SUM(l.final_bid) as total_earnings FROM Listings l INNER JOIN Vehicles v ON l.vehicle_id = v.vehicle_id WHERE l.sold = 1 GROUP BY v.vehicle_type;");
+				    ResultSet earningsPerTypeResultSet = earningsPerTypeStatement.executeQuery();
+				%>
+				<h2>Earnings Per Vehicle Type</h2>
+				<table class="table table-striped table-hover">
+				    <thead>
+				        <tr>
+				            <th scope="col">Vehicle Type</th>
+				            <th scope="col">Total Earnings</th>
+				        </tr>
+				    </thead>
+				    <tbody>
+				        <% while (earningsPerTypeResultSet.next()) { %>
+				            <tr>
+				                <td><%= earningsPerTypeResultSet.getString("vehicle_type") %></td>
+				                <td><%= earningsPerTypeResultSet.getInt("total_earnings") %></td>
+				            </tr>
+				        <% } %>
+				    </tbody>
+				</table>
+				<%
+					PreparedStatement earningsPerEndUserStatement = connection.prepareStatement("SELECT e.full_name, e.email_id, e.ph_no, SUM(l.final_bid) as total_earnings FROM Listings l INNER JOIN EndUsers e ON l.seller_id = e.email_id WHERE l.sold = 1 GROUP BY e.email_id, e.full_name, e.ph_no;");
+			        ResultSet earningsPerEndUserResultSet = earningsPerEndUserStatement.executeQuery();
+				%>
 
+		        <h2>Earnings Per End User</h2>
+		        <table class="table table-striped table-hover">
+		            <thead>
+		                <tr>
+		                    <th scope="col">Name</th>
+		                    <th scope="col">Email</th>
+		                    <th scope="col">Phone #</th>
+		                    <th scope="col">Total Earnings</th>
+		                </tr>
+		            </thead>
+		            <tbody>
+		                <% while (earningsPerEndUserResultSet.next()) { %>
+		                    <tr>
+		                        <td><%= earningsPerEndUserResultSet.getString("full_name") %></td>
+		                        <td><%= earningsPerEndUserResultSet.getString("email_id") %></td>
+		                        <td><%= earningsPerEndUserResultSet.getInt("ph_no") %></td>
+		                        <td><%= earningsPerEndUserResultSet.getInt("total_earnings") %></td>
+		                    </tr>
+		                <% } %>
+		            </tbody>
+		        </table>
+		        <%
+			     // Best-selling items report
+			        PreparedStatement bestSellingItemsStatement = connection.prepareStatement("SELECT v.vehicle_id, v.vehicle_name, v.vehicle_model, COUNT(l.vehicle_id) as total_sold FROM Listings l INNER JOIN Vehicles v ON l.vehicle_id = v.vehicle_id WHERE l.sold = 1 GROUP BY v.vehicle_id, v.vehicle_name, v.vehicle_model ORDER BY total_sold DESC;");
+			        ResultSet bestSellingItemsResultSet = bestSellingItemsStatement.executeQuery();
+				%>
+
+		        <h2>Best-selling Items</h2>
+		        <table class="table table-striped table-hover">
+		            <thead>
+		                <tr>
+		                    <th scope="col">Vehicle ID</th>
+		                    <th scope="col">Vehicle Name</th>
+		                    <th scope="col">Vehicle Model</th>
+		                    <th scope="col">Total Sold</th>
+		                </tr>
+		            </thead>
+		            <tbody>
+		                <% while (bestSellingItemsResultSet.next()) { %>
+		                    <tr>
+		                        <td><%= bestSellingItemsResultSet.getInt("vehicle_id") %></td>
+		                        <td><%= bestSellingItemsResultSet.getString("vehicle_name") %></td>
+		                        <td><%= bestSellingItemsResultSet.getString("vehicle_model") %></td>
+		                        <td><%= bestSellingItemsResultSet.getInt("total_sold") %></td>
+		                    </tr>
+		                <% } %>
+		            </tbody>
+		        </table>
+		        <%
+		        	// Best Buyers
+				        PreparedStatement bestBuyersStatement = connection.prepareStatement("SELECT e.full_name, e.email_id, e.ph_no, COUNT(l.buyer_id) as total_purchases FROM Listings l INNER JOIN EndUsers e ON l.buyer_id = e.email_id WHERE l.sold = 1 GROUP BY e.email_id, e.full_name, e.ph_no ORDER BY total_purchases DESC;");
+				        ResultSet bestBuyersResultSet = bestBuyersStatement.executeQuery();
+				%>
+
+		        <h2>Best Buyers</h2>
+		        <table class="table table-striped table-hover">
+		            <thead>
+		                <tr>
+		                    <th scope="col">Name</th>
+		                    <th scope="col">Email</th>
+		                    <th scope="col">Phone #</th>
+		                    <th scope="col">Total Purchases</th>
+		                </tr>
+		            </thead>
+		            <tbody>
+		                <% while (bestBuyersResultSet.next()) { %>
+		                    <tr>
+		                        <td><%= bestBuyersResultSet.getString("full_name") %></td>
+		                        <td><%= bestBuyersResultSet.getString("email_id") %></td>
+		                        <td><%= bestBuyersResultSet.getLong("ph_no") %></td>
+		                        <td><%= bestBuyersResultSet.getInt("total_purchases") %></td>
+		                    </tr>
+		                <% } %>
+		            </tbody>
+		        </table>
+	            <%
             } else {
                 out.println("You do not have permission to view this page.");
             }
