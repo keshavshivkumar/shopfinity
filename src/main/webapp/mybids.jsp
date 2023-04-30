@@ -41,14 +41,14 @@
                     <a href="sell.jsp" class="nav-link">Sell</a>
                 </li>
                 <% if (session1.getAttribute("role_id").equals(3)){%>
-                		<li class="nav-item">
-                            <a href="mylistings.jsp" class="nav-link">My Listings</a>
-                        </li>
                         <li class="nav-item">
                             <a href="askquestions.jsp" class="nav-link">Ask Questions</a>
                         </li>
                         <li class="nav-item">
                             <a href="yourquestions.jsp" class="nav-link">Your Questions</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="mylistings.jsp" class="nav-link">My Listings</a>
                         </li>
                         <% } %>
                 <li class="nav-item">
@@ -64,7 +64,7 @@
 </header>
 <div class="container">
     <% if (session1.getAttribute("loggedIn") != null && (Boolean) session1.getAttribute("loggedIn")) { %>
-        <h2 class="mt-4 mb-3">My Listings</h2>
+        <h2 class="mt-4 mb-3">My Bids</h2>
         <table class="table table-bordered">
             <thead>
                 <tr>
@@ -72,8 +72,7 @@
                     <th>Vehicle Name</th>
                     <th>Vehicle Model</th>
                     <th>License Plate</th>
-                    <th>Bid Price</th>
-                    <th>Upper Limit</th>
+                    <th>Won Bid?</th>
                     <th>Action</th>
                 </tr>
             </thead>
@@ -94,7 +93,7 @@
                     String username = props.getProperty("db.username");
                     String pswd = props.getProperty("db.password");
                     connection = DriverManager.getConnection(url, username, pswd);
-                    preparedStatement = connection.prepareStatement("SELECT V.vehicle_id, V.vehicle_name, V.vehicle_model, L.license_plate, B.dt, B.buyer_id, B.bid_amount, B.upper_limit FROM Listings as L, Vehicles as V, Bids as B WHERE v.vehicle_id = l.vehicle_id AND l.vehicle_id = b.vehicle_id AND l.seller_id = b.buyer_id AND l.license_plate = b.license_plate AND L.seller_id = ?");
+                    preparedStatement = connection.prepareStatement("SELECT V.vehicle_id, V.vehicle_name, V.vehicle_model, L.license_plate, L.expiration_datetime, L.buyer_id, B.dt, B.bid_amount, B.upper_limit FROM Vehicles AS V INNER JOIN Listings AS L ON V.vehicle_id = L.vehicle_id LEFT JOIN Bids AS B ON L.vehicle_id = B.vehicle_id AND L.license_plate = B.license_plate WHERE B.buyer_id = ?");
 
                     preparedStatement.setString(1, userId);
                     resultSet = preparedStatement.executeQuery();
@@ -106,13 +105,27 @@
                         <td><%= resultSet.getString("vehicle_name") %></td>
                         <td><%= resultSet.getString("vehicle_model") %></td>
                         <td><%= resultSet.getString("license_plate") %></td>
-                        <td><%= resultSet.getDouble("listing_price") %></td>
-                        <td><%= resultSet.getDouble("min_price") %></td>
-                        <td><%= resultSet.getDouble("min_inc") %></td>
-                        <td>
-                            <form action="deletelisting.jsp" method="POST">
+                        <%
+						    java.util.Date currentDate = new java.util.Date();
+						    java.sql.Timestamp expirationDate = resultSet.getTimestamp("expiration_datetime");
+						    String listingBuyerId = resultSet.getString("buyer_id");
+						    String wonBid = "No";
+						
+						    if (listingBuyerId == null) {
+						        wonBid = "Pending";
+						    } else if (listingBuyerId.equals(userId)) {
+						        if (currentDate.after(expirationDate)) {
+						            wonBid = "Yes";
+						        } else {
+						            wonBid = "Pending";
+						        }
+						    }
+						%>
+						<td><%= wonBid %></td>
+                       <td>
+                            <form action="deletebid.jsp" method="POST">
                                 <input type="hidden" name="vehicle_id" value="<%= resultSet.getInt("vehicle_id") %>">
-                                <input type="hidden" name="dt" value="<%= resultSet.getTimestamp("dt") %>">
+                                <input type="hidden" name="license_plate" value="<%= resultSet.getString("license_plate") %>">
                                 <button type="submit" class="btn btn-danger">Delete</button>
                             </form>
                         </td>

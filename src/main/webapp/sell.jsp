@@ -44,6 +44,9 @@
                         <li class="nav-item">
                             <a href="yourquestions.jsp" class="nav-link">Your Questions</a>
                         </li>
+                        <li class="nav-item">
+                            <a href="mybids.jsp" class="nav-link">My Bids</a>
+                        </li>
                         <% } %>
                 <li class="nav-item">
                     <a href="logout.jsp" class="nav-link">Sign Out</a>
