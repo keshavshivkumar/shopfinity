@@ -75,6 +75,8 @@
                     <th>Minimum Increment</th>
                     <th>Time Left</th>
                     <th>Current Bid</th>
+                    <th>Sold</th>
+                    <th>Buyer ID</th>
                     <th>Action</th>
                 </tr>
             </thead>
@@ -95,10 +97,9 @@
                     String username = props.getProperty("db.username");
                     String pswd = props.getProperty("db.password");
                     connection = DriverManager.getConnection(url, username, pswd);
-                    preparedStatement = connection.prepareStatement("SELECT V.vehicle_id, V.vehicle_name, V.vehicle_model, V.vehicle_type, L.listing_price, L.license_plate, L.min_price, L.min_inc, L.dt, B.bid_amount, CONCAT(TIMESTAMPDIFF(HOUR, NOW(), L.expiration_datetime), 'h ', TIMESTAMPDIFF(MINUTE, NOW(), L.expiration_datetime) % 60, 'm ', TIMESTAMPDIFF(SECOND, NOW(), L.expiration_datetime) % 60, 's') AS time_left FROM Listings L INNER JOIN Vehicles V ON L.vehicle_id = V.vehicle_id LEFT JOIN Bids B ON L.vehicle_id = B.vehicle_id AND L.license_plate = B.license_plate WHERE L.seller_id = ?");
-
-
-
+                    
+                    preparedStatement = connection.prepareStatement("SELECT V.vehicle_id, V.vehicle_name, V.vehicle_model, V.vehicle_type, L.listing_price, L.license_plate, L.min_price, L.min_inc, L.dt, L.calc_sold AS sold, L.calc_buyer_id AS buyer_id, B.bid_amount, CONCAT(TIMESTAMPDIFF(HOUR, NOW(), L.expiration_datetime), 'h ', TIMESTAMPDIFF(MINUTE, NOW(), L.expiration_datetime) % 60, 'm ', TIMESTAMPDIFF(SECOND, NOW(), L.expiration_datetime) % 60, 's') AS time_left FROM (SELECT *, (CASE WHEN expiration_datetime < NOW() AND license_plate IN (SELECT license_plate FROM Bids) THEN 1 ELSE 0 END) AS calc_sold, (SELECT buyer_id FROM Bids WHERE license_plate = Listings.license_plate ORDER BY bid_amount DESC, dt DESC LIMIT 1) AS calc_buyer_id FROM Listings) L INNER JOIN Vehicles V ON L.vehicle_id = V.vehicle_id LEFT JOIN Bids B ON L.vehicle_id = B.vehicle_id AND L.license_plate = B.license_plate WHERE L.seller_id = ?");
+                    
                     preparedStatement.setString(1, userId);
                     resultSet = preparedStatement.executeQuery();
 
@@ -115,6 +116,9 @@
                         <td><%= resultSet.getDouble("min_inc") %></td>
                         <td><%= resultSet.getString("time_left") %></td>
                         <td><%= resultSet.getInt("bid_amount") %></td>
+                        <td><%= resultSet.getInt("sold") == 1 ? "Yes" : "No" %></td>
+						<td><%= resultSet.getString("buyer_id") == null ? "N/A" : resultSet.getString("buyer_id") %></td>
+                        
                         <td>
                             <form action="deletelisting.jsp" method="POST">
                                 <input type="hidden" name="vehicle_id" value="<%= resultSet.getInt("vehicle_id") %>">
@@ -146,4 +150,21 @@
     <% } %>
 
     </div>
+    
 </body>
+<script>
+    function updateListings() {
+    	console.log("updateListings called");
+        fetch('update_listings.jsp')
+            .then(response => response.text())
+            .then(result => console.log(result))
+            .catch(error => console.error('Error:', error));
+    }
+
+    // Call the update function every 5 minutes (300000 milliseconds)
+    document.addEventListener('DOMContentLoaded', updateListings);
+    setInterval(updateListings, 300000);
+    
+</script>
+
+</html>
