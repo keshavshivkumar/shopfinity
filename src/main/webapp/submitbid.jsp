@@ -117,9 +117,9 @@
                                 preparedStatement.setString(2, buyerId);
                                 preparedStatement.setString(3, license);
                                 preparedStatement.executeUpdate();
-                                redirectUrl="index.jsp?success";
+                                redirectUrl="index.jsp?bid=success";
                             } else if (newBidForCurrentHighest == newBidForNewBidder && currentHighestUpperLimit==upperLimit){
-                            	redirectUrl="bidform.jsp?vehicle_id=" + vehicleId + "&bid=failure&exceptionMessage=upper?limit?too?low.";
+                            	redirectUrl="bidform.jsp?bid=repeat";
                             } else {
                                 preparedStatement = connection.prepareStatement("INSERT INTO Bids (vehicle_id, dt, seller_id, buyer_id, upper_limit, bid_amount, license_plate) VALUES (?, ?, ?, ?, ?, ?, ?)");
                                 preparedStatement.setInt(1, vehicleId);
@@ -136,7 +136,7 @@
                                 preparedStatement.setString(2, currentHighestBuyerId);
                                 preparedStatement.setString(3, license);
                                 preparedStatement.executeUpdate();
-                                redirectUrl="index.jsp?success";
+                                redirectUrl="index.jsp?bid=success";
                             }
                         }
                     }
@@ -153,18 +153,18 @@
                     preparedStatement.setInt(6, bidAmount);
                     preparedStatement.setString(7, license);
                     preparedStatement.executeUpdate();
-                    redirectUrl="index.jsp?success";
+                    redirectUrl="index.jsp?bid=success";
                 }
                 
             } else {
-            	redirectUrl="bidform.jsp?vehicle_id=" + vehicleId + "&dt=" + dateFormat.format(dtTimestamp) + "&bid_amount=" + bidAmount + "&bid=failure&exceptionMessage=Bid%20amount%20is%20less%20than%20the%20minimum%20price.";
+            	redirectUrl="bidform.jsp?bid=failure";
             }
             response.sendRedirect(redirectUrl);
         }
 
         
     } catch (Exception e) {
-        response.sendRedirect("listings.jsp?vehicle_id=" + vehicleId + "&dt=" + dateFormat.format(dtTimestamp) + "&bid_amount=" + bidAmount + "&bid=failure&exceptionMessage=" + e.getMessage());
+        response.sendRedirect("listings.jsp?bid=failure");
     } finally {
         if (resultSet != null) try { resultSet.close(); } catch (SQLException e) { /* ignored */ }
         if (preparedStatement != null) try { preparedStatement.close(); } catch (SQLException e) { /* ignored */ }

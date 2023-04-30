@@ -61,6 +61,15 @@
 </header>
 <div class="container">
     <% if (session1.getAttribute("loggedIn") != null && (Boolean) session1.getAttribute("loggedIn")) { %>
+    <% if ("failure".equals(request.getParameter("bid"))) {%>
+			<p id="success-message" style="color: red;">You can't bid on your own listing!</p>
+				<script>
+					setTimeout(function() {
+						document.getElementById("success-message").style.display = "none";
+						history.replaceState({}, "", "bidform.jsp");
+					}, 3000);
+				</script>
+			<% } %>
         <h2 class="mt-4 mb-3">Listings</h2>
         <table class="table table-bordered">
             <thead>

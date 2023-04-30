@@ -49,6 +49,9 @@
                     <% if (session1.getAttribute("loggedIn") != null && (Boolean) session1.getAttribute("loggedIn")) { 
                     	if (session1.getAttribute("role_id").equals(1)){%>
                     	<li class="nav-item">
+                            <a href="salesreports.jsp" class="nav-link">Reports</a>
+                        </li>
+                    	<li class="nav-item">
                             <a href="reps.jsp" class="nav-link">Representatives</a>
                         </li>
                         <% } 
@@ -91,7 +94,17 @@
 	        session1.setAttribute("loginMessage", null);
 	    }
 	%>
+	
 	<% if (session1.getAttribute("loggedIn") != null && (Boolean) session1.getAttribute("loggedIn")) { %>
+	<% if ("success".equals(request.getParameter("bid"))) { %>
+	<p id="success-message" style="color: green;">Bid placed successfully.</p>
+		<script>
+			setTimeout(function() {
+				document.getElementById("success-message").style.display = "none";
+				history.replaceState({}, "", "index.jsp");
+			}, 3000);
+		</script>
+	<% } %>
 	  <div class="container">
 			<div class="d-flex justify-content-center my-3">
 				<a href="listings.jsp" class="btn btn-primary">Browse All Listings</a>
