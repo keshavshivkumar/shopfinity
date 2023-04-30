@@ -192,8 +192,8 @@
 		                    <tr>
 		                        <td><%= earningsPerEndUserResultSet.getString("full_name") %></td>
 		                        <td><%= earningsPerEndUserResultSet.getString("email_id") %></td>
-		                        <td><%= earningsPerEndUserResultSet.getInt("ph_no") %></td>
-		                        <td><%= earningsPerEndUserResultSet.getInt("total_earnings") %></td>
+		                        <td><%= earningsPerEndUserResultSet.getLong("ph_no") %></td>
+		                        <td><%= earningsPerEndUserResultSet.getLong("total_earnings") %></td>
 		                    </tr>
 		                <% } %>
 		            </tbody>
@@ -247,7 +247,7 @@
 		                        <td><%= bestBuyersResultSet.getString("full_name") %></td>
 		                        <td><%= bestBuyersResultSet.getString("email_id") %></td>
 		                        <td><%= bestBuyersResultSet.getLong("ph_no") %></td>
-		                        <td><%= bestBuyersResultSet.getInt("total_purchases") %></td>
+		                        <td><%= bestBuyersResultSet.getLong("total_purchases") %></td>
 		                    </tr>
 		                <% } %>
 		            </tbody>
