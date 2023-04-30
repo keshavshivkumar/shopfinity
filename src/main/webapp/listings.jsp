@@ -73,21 +73,24 @@
         <h2 class="mt-4 mb-3">Listings</h2>
         <table class="table table-bordered">
             <thead>
-                <tr>
-                    <th>Vehicle Name</th>
-                    <th>Vehicle Model</th>
-                    <th>Vehicle Type</th>
-                    <th>License Plate</th>
-                    <th>Name</th>
-                    <th>Listing Price</th>
-                    <th>Time Left</th>
-                    <th>Current Bid</th>
-                    <th>Bid</th>
-                    <% if (Integer.parseInt(session1.getAttribute("role_id").toString()) < 3) { %>
-                    <th>Action</th>
-                    <% } %>
-                </tr>
-            </thead>
+				    <tr>
+				        <th>Vehicle Name</th>
+				        <th>Vehicle Model</th>
+				        <th>Vehicle Type</th>
+				        <th>License Plate</th>
+				        <th>Name</th>
+				        <th>Listing Price</th>
+				        <th>Time Left</th>
+				        <th>Current Bid</th>
+				        <th>Sold</th>
+				        <th>Buyer ID</th>
+				        <th>Bid</th>
+				        <% if (Integer.parseInt(session1.getAttribute("role_id").toString()) < 3) { %>
+				        <th>Action</th>
+				        <% } %>
+				    </tr>
+			</thead>
+
             <tbody>
             <%
                 Connection connection = null;
@@ -104,7 +107,29 @@
                     String username = props.getProperty("db.username");
                     String pswd = props.getProperty("db.password");
                     connection = DriverManager.getConnection(url, username, pswd);
-                    preparedStatement = connection.prepareStatement("SELECT v.vehicle_id, v.vehicle_name, v.vehicle_model, v.vehicle_type, l.seller_id, e.full_name, l.listing_price, l.dt, l.license_plate, CONCAT(TIMESTAMPDIFF(HOUR, NOW(), l.expiration_datetime), 'h ', TIMESTAMPDIFF(MINUTE, NOW(), l.expiration_datetime) % 60, 'm ', TIMESTAMPDIFF(SECOND, NOW(), l.expiration_datetime) % 60, 's') AS time_left, b.bid_amount FROM Vehicles AS v JOIN Listings AS l ON v.vehicle_id=l.vehicle_id JOIN EndUsers as e ON l.seller_id = e.email_id LEFT JOIN Bids as b ON l.vehicle_id = b.vehicle_id AND l.license_plate = b.license_plate WHERE l.expiration_datetime > NOW()");
+                    preparedStatement = connection.prepareStatement(
+                    	    "SELECT v.vehicle_id, " +
+                    	           "v.vehicle_name, " +
+                    	           "v.vehicle_model, " +
+                    	           "v.vehicle_type, " +
+                    	           "l.seller_id, " +
+                    	           "e.full_name, " +
+                    	           "l.listing_price, " +
+                    	           "l.dt, " +
+                    	           "l.license_plate, " +
+                    	           "CONCAT(TIMESTAMPDIFF(HOUR, NOW(), l.expiration_datetime), 'h ', TIMESTAMPDIFF(MINUTE, NOW(), l.expiration_datetime) % 60, 'm ', TIMESTAMPDIFF(SECOND, NOW(), l.expiration_datetime) % 60, 's') AS time_left, " +
+                    	           "b.bid_amount, " +
+                    	           "l.calc_sold AS sold, " +
+                    	           "l.calc_buyer_id AS buyer_id " +
+                    	    "FROM (SELECT *, " +
+                    	                 "(CASE WHEN expiration_datetime < NOW() AND license_plate IN (SELECT license_plate FROM Bids) THEN 1 ELSE 0 END) AS calc_sold, " +
+                    	                 "(SELECT buyer_id FROM Bids WHERE license_plate = Listings.license_plate ORDER BY bid_amount DESC, dt DESC LIMIT 1) AS calc_buyer_id " +
+                    	          "FROM Listings) l " +
+                    	    "INNER JOIN Vehicles v ON l.vehicle_id = v.vehicle_id " +
+                    	    "JOIN EndUsers e ON l.seller_id = e.email_id " +
+                    	    "LEFT JOIN Bids b ON l.vehicle_id = b.vehicle_id AND l.license_plate = b.license_plate " +
+                    	    "WHERE l.expiration_datetime > NOW()"
+                    	);
 
                     resultSet = preparedStatement.executeQuery();
 
@@ -119,6 +144,8 @@
                     <td><%= resultSet.getDouble("listing_price") %></td>
                     <td><%= resultSet.getString("time_left") %></td>
                     <td><%= resultSet.getInt("bid_amount") %></td>
+                    <td><%= resultSet.getInt("sold") == 1 ? "Yes" : "No" %></td>
+					<td><%= resultSet.getString("buyer_id") == null ? "N/A" : resultSet.getString("buyer_id") %></td>
                     <td>
 					    <% if (session1.getAttribute("loggedIn") != null && (Boolean) session1.getAttribute("loggedIn")) { %>
 					        <form action="bidform.jsp" method="POST">
@@ -164,7 +191,21 @@
         </div>
     <% } %>
 </div>
-<script src="${contextPath}/resources/searchbar.js"></script>
+
 </body>
+<script>
+    function updateListings() {
+    	console.log("updateListings called");
+        fetch('update_listings.jsp')
+            .then(response => response.text())
+            .then(result => console.log(result))
+            .catch(error => console.error('Error:', error));
+    }
+
+    // Call the update function every 5 minutes (300000 milliseconds)
+    document.addEventListener('DOMContentLoaded', updateListings);
+    setInterval(updateListings, 300000);
+    
+</script>
 </html>
                     

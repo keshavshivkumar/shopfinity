@@ -119,6 +119,24 @@
 	    <ul id="search-results" class="list-unstyled"></ul>
 	  </div>
 	<% } %>
-<script src="${contextPath}/resources/searchbar.js"></script>
+<script src="${contextPath}/resources/searchbar.js">
+</script>
+<script>
+
+			function updateListings() {
+				console.log("updateListings called");
+			    fetch('update_listings.jsp')
+			        .then(response => response.text())
+			        .then(result => console.log(result))
+			        .catch(error => console.error('Error:', error));
+			}
+			
+			// Call the update function every 5 minutes (300000 milliseconds)
+			document.addEventListener('DOMContentLoaded', updateListings);
+			setInterval(updateListings, 300000);
+
+
+
+</script>
 </body> 
 </html>
