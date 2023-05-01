@@ -23,6 +23,7 @@
 	    userEmail = session1.getAttribute("user").toString();
 	}
 
+
     Connection connection = null;
     PreparedStatement preparedStatement = null;
     ResultSet resultSet = null;
@@ -76,9 +77,6 @@
                             <a href="sell.jsp" class="nav-link">Sell</a>
                         </li>
                         <li class="nav-item">
-                            <a href="notifications.jsp" class="nav-link">Notifications</a>
-                        </li>
-                        <li class="nav-item">
                             <a href="logout.jsp" class="nav-link">Sign Out</a>
                         </li>
                     <% } else { %>
@@ -92,31 +90,19 @@
     </header>
     <% if (session1.getAttribute("loggedIn") != null && (Boolean) session1.getAttribute("loggedIn")) { %>
     <main class="container my-4">
-    <h2 class="mb-3">Questions</h2>
-    <div class="input-group mb-3">
-        <input type="text" id="search-input" class="form-control" placeholder="Search..." onkeyup="searchFunction()">
-        <button class="btn btn-primary" type="button">Search</button>
-    </div>
+    <h2 class="mb-3">All Notifications</h2>
     <div class="table-responsive">
-        <table class="table table-striped" id="questions-table">
-            
-                <thead>
-				    <tr>
-				        <th scope="col" onclick="loadSortedQuestions('question_id', 'asc')">Question ID</th>
-				        <th scope="col" onclick="loadSortedQuestions('customer_id', 'asc')">Customer ID</th>
-				        <th scope="col" onclick="loadSortedQuestions('representative_id', 'asc')">Representative ID</th>
-				        <th scope="col" onclick="loadSortedQuestions('question', 'asc')">Question</th>
-				        <th scope="col" onclick="loadSortedQuestions('answer', 'asc')">Answer</th>
-				        <th scope="col" onclick="loadSortedQuestions('asked_datetime', 'asc')">Asked Datetime</th>
-				        <th scope="col" onclick="loadSortedQuestions('answered_datetime', 'asc')">Answered Datetime</th>
-				    </tr>
-				</thead>
-
-
-            
+        <table class="table table-striped" id="notifications-table">
+            <thead>
+                <tr>
+                    <th scope="col" onclick="loadSortedNotifications('notification_id', 'asc')">Notification ID</th>
+                    <th scope="col" onclick="loadSortedNotifications('email_id', 'asc')">User Email</th>
+                    <th scope="col" onclick="loadSortedNotifications('notification_text', 'asc')">Notification Text</th>
+                    <th scope="col" onclick="loadSortedNotifications('timestamp_pushed', 'asc')">Timestamp</th>
+                </tr>
+            </thead>
             <tbody>
                 <%
-                    // Initialize database connection and fetch data
                     Properties props = new Properties();
                     FileInputStream in = new FileInputStream(getServletContext().getRealPath("/resources/database.properties"));
                     props.load(in);
@@ -127,12 +113,12 @@
                     Class.forName("com.mysql.jdbc.Driver");
                     connection = DriverManager.getConnection(url, username, pswd);
 
-                    String sortField = request.getParameter("sortField") != null ? request.getParameter("sortField") : "question_id";
+                    String sortField = request.getParameter("sortField") != null ? request.getParameter("sortField") : "notification_id";
                     String sortDirection = request.getParameter("sortDirection") != null ? request.getParameter("sortDirection") : "asc";
 
-                    String query = "SELECT * FROM Questions ORDER BY " + sortField + " " + sortDirection;
+                    String query = "SELECT * FROM Notifications WHERE email_id = ? ORDER BY " + sortField + " " + sortDirection;
                     preparedStatement = connection.prepareStatement(query);
-
+                    preparedStatement.setString(1, userEmail);
                     resultSet = preparedStatement.executeQuery();
 
                     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -140,109 +126,33 @@
                     while (resultSet.next()) {
                 %>
                 <tr>
-                    <th scope="row"><%= resultSet.getInt("question_id") %></th>
-                    <td><%= resultSet.getString("customer_id") %></td>
-                    <td><%= resultSet.getString("representative_id") %></td>
-                    <td><%= resultSet.getString("question") %></td>
-                    <td><%= resultSet.getString("answer") %></td>
-                    <td><%= sdf.format(resultSet.getTimestamp("asked_datetime")) %></td>
-                    <td><%= resultSet.getTimestamp("answered_datetime") != null ? sdf.format(resultSet.getTimestamp("answered_datetime")) : "" %></td>
+                    <th scope="row"><%= resultSet.getInt("notification_id") %></th>
+                    <td><%= resultSet.getString("email_id") %></td>
+                    <td><%= resultSet.getString("notification_text") %></td>
+                    <td><%= sdf.format(resultSet.getTimestamp("timestamp_pushed")) %></td>
                 </tr>
                 <% } %>
             </tbody>
         </table>
         <form id="sortForm" method="get" style="display:none;">
-		    <input type="hidden" id="sortField" name="sortField" value="">
-		    <input type="hidden" id="sortDirection" name="sortDirection" value="">
-	</form>
-	<% } else { %>
+            <input type="hidden" id="sortField" name="sortField" value="">
+            <input type="hidden" id="sortDirection" name="sortDirection" value="">
+        </form>
+        <% } else { %>
         <div class="row">
             <div class="col-md-12 text-center mt-4">
-                <div class="alert alert-warning">You first need to log in to view all the questions!</div>
+                <div class="alert alert-warning">You first need to log in to view your notifications!</div>
             </div>
         </div>
     <% } %>
-        
     </div>
 </main>
-
 <script>
-    function searchFunction() {
-        const searchInput = document.getElementById("search-input");
-        const filter = searchInput.value.toUpperCase();
-        const table = document.getElementById("questions-table");
-        const tr = table.getElementsByTagName("tr");
-
-        for (let i = 1; i < tr.length; i++) {
-            let txtValue = tr[i].textContent || tr[i].innerText;
-            if (txtValue.toUpperCase().indexOf(filter) > -1) {
-                tr[i].style.display = "";
-            } else {
-                tr[i].style.display = "none";
-            }
-        }
-    }
-    
-    function loadSortedQuestions(sortField, sortDirection) {
+    function loadSortedNotifications(sortField, sortDirection) {
         document.getElementById("sortField").value = sortField;
         document.getElementById("sortDirection").value = sortDirection;
         document.getElementById("sortForm").submit();
     }
-
-
-    function sortTable(columnIndex) {
-        let table = document.getElementById("questionsTable");
-        let switching = true;
-        let rows, i, x, y, shouldSwitch, direction;
-        let switchCount = 0;
-
-        direction = "asc";
-
-        while (switching) {
-            switching = false;
-            rows = table.rows;
-
-            for (i = 1; i < (rows.length - 1); i++) {
-                shouldSwitch = false;
-                x = rows[i].getElementsByTagName("td")[columnIndex];
-                y = rows[i + 1].getElementsByTagName("td")[columnIndex];
-                let xValue, yValue;
-
-                if (isNaN(parseFloat(x.innerHTML))) {
-                    xValue = x.innerHTML.toLowerCase();
-                    yValue = y.innerHTML.toLowerCase();
-                } else {
-                    xValue = parseFloat(x.innerHTML);
-                    yValue = parseFloat(y.innerHTML);
-                }
-
-                if (direction === "asc") {
-                    if (xValue > yValue) {
-                        shouldSwitch = true;
-                        break;
-                    }
-                } else if (direction === "desc") {
-                    if (xValue < yValue) {
-                        shouldSwitch = true;
-                        break;
-                    }
-                }
-            }
-
-            if (shouldSwitch) {
-                rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
-                switching = true;
-                switchCount++;
-            } else {
-                if (switchCount === 0 && direction === "asc") {
-                    direction = "desc";
-                    switching = true;
-                }
-            }
-        }
-    }
-
 </script>
 </body>
 </html>
-    

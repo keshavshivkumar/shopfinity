@@ -119,11 +119,44 @@
                                 preparedStatement.setString(2, buyerId);
                                 preparedStatement.setString(3, license);
                                 preparedStatement.executeUpdate();
+                                
+                                String vehicleName;
+                                preparedStatement = connection.prepareStatement("SELECT vehicle_name, vehicle_model FROM Vehicles WHERE vehicle_id = ?");
+                                preparedStatement.setInt(1, vehicleId);
+                                ResultSet vehicleResultSet = preparedStatement.executeQuery();
+                                if (vehicleResultSet.next()) {
+                                	vehicleName = vehicleResultSet.getString("vehicle_name") + " " + vehicleResultSet.getString("vehicle_model");
+                                } else {
+                                    vehicleName = "Unknown Vehicle";
+                                }
+
+                                // Insert notification for the losing bidder
+                                preparedStatement = connection.prepareStatement("INSERT INTO Notifications (email_id, notification_text) VALUES (?, ?)");
+                                preparedStatement.setString(1, buyerId);
+                                preparedStatement.setString(2, "Your bid on vehicle " + vehicleName + " with license plate " + license + " was beaten by " + currentHighestBuyerId + " with amount " + newBidForCurrentHighest);
+                                preparedStatement.executeUpdate();
                                
                                 redirectUrl="index.jsp?bid=success";
                             } else if (newBidForCurrentHighest == newBidForNewBidder && currentHighestUpperLimit==upperLimit){
                             	redirectUrl="index.jsp?bid=repeat";
                             } else {
+                            	
+                            	// Get the vehicle name
+                                String vehicleName;
+                                preparedStatement = connection.prepareStatement("SELECT vehicle_name, vehicle_model FROM Vehicles WHERE vehicle_id = ?");
+                                preparedStatement.setInt(1, vehicleId);
+                                ResultSet vehicleResultSet = preparedStatement.executeQuery();
+                                if (vehicleResultSet.next()) {
+                                    vehicleName = vehicleResultSet.getString("vehicle_name") + " " + vehicleResultSet.getString("vehicle_model");
+                                } else {
+                                    vehicleName = "Unknown Vehicle";
+                                }
+
+                                // Insert notification for the current highest bidder before deleting their bid
+                                preparedStatement = connection.prepareStatement("INSERT INTO Notifications (email_id, notification_text) VALUES (?, ?)");
+                                preparedStatement.setString(1, currentHighestBuyerId);
+                                preparedStatement.setString(2, "Your bid on vehicle " + vehicleName + " with license plate " + license + " was beaten by " + buyerId + " with amount " + newBidForNewBidder);
+                                preparedStatement.executeUpdate();
                             	
                             	preparedStatement = connection.prepareStatement("DELETE FROM Bids WHERE vehicle_id=? AND buyer_id=? AND license_plate=?");
                                 preparedStatement.setInt(1, vehicleId);

@@ -2,6 +2,7 @@
 <%@ page import="java.io.*" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ page import="java.util.Properties" %>
 
 <c:set var="contextPath" value="${pageContext.request.contextPath}"/>
 
@@ -87,6 +88,9 @@
                             <a href="sell.jsp" class="nav-link">Sell</a>
                         </li>
                         <li class="nav-item">
+                            <a href="notifications.jsp" class="nav-link">Notifications</a>
+                        </li>
+                        <li class="nav-item">
                             <a href="logout.jsp" class="nav-link">Sign Out</a>
                         </li>
                     <% } else { %>
@@ -99,12 +103,45 @@
         </div>
     </header>
 	<%
-		String loginMessage = "";
-	    loginMessage = (String) session1.getAttribute("loginMessage");
-	    if (loginMessage != null) {
-	        out.println("<div class='alert alert-info mt-3'>" + loginMessage + "</div>");
-	        session1.setAttribute("loginMessage", null);
+			String loginMessage = "";
+		    loginMessage = (String) session1.getAttribute("loginMessage");
+		    if (loginMessage != null) {
+		        out.println("<div id='login-message' class='alert alert-info mt-3'>" + loginMessage + "</div>");
+		        session1.setAttribute("loginMessage", null);
+		    }
+	    String userEmail = "";
+	    if (session1.getAttribute("user") != null) {
+	        userEmail = session1.getAttribute("user").toString();
 	    }
+	    if (userEmail != null && !userEmail.isEmpty()) {
+	        // Initialize database connection and fetch the latest notification
+	        Properties props = new Properties();
+	        FileInputStream in = new FileInputStream(getServletContext().getRealPath("/resources/database.properties"));
+	        props.load(in);
+	        in.close();
+	        String url = props.getProperty("db.url");
+	        String username = props.getProperty("db.username");
+	        String pswd = props.getProperty("db.password");
+	        Class.forName("com.mysql.jdbc.Driver");
+	        Connection connection = DriverManager.getConnection(url, username, pswd);
+
+	        String query = "SELECT * FROM Notifications WHERE email_id = ? ORDER BY timestamp_pushed DESC LIMIT 1";
+	        PreparedStatement preparedStatement = connection.prepareStatement(query);
+	        preparedStatement.setString(1, userEmail);
+
+	        ResultSet resultSet = preparedStatement.executeQuery();
+
+	        if (resultSet.next()) {
+	            String latestNotification = resultSet.getString("notification_text");
+	            out.println("<div id='latest-notification' class='alert alert-info mt-3'>Latest Notification: " + latestNotification + "</div>");
+	        }
+
+	        // Close resources
+	        if (resultSet != null) resultSet.close();
+	        if (preparedStatement != null) preparedStatement.close();
+	        if (connection != null) connection.close();
+	    }
+
 	%>
 	
 	<% if (session1.getAttribute("loggedIn") != null && (Boolean) session1.getAttribute("loggedIn")) { %>
@@ -161,6 +198,18 @@
 
 <script>
 
+setTimeout(function() {
+    const loginMessageElement = document.getElementById("login-message");
+    const latestNotificationElement = document.getElementById("latest-notification");
+
+    if (loginMessageElement) {
+        loginMessageElement.style.display = "none";
+    }
+
+    if (latestNotificationElement) {
+        latestNotificationElement.style.display = "none";
+    }
+}, 5000);
 			function updateListings() {
 				console.log("updateListings called");
 			    fetch('update_listings.jsp')
@@ -172,6 +221,7 @@
 			// Call the update function every 5 minutes (300000 milliseconds)
 			document.addEventListener('DOMContentLoaded', updateListings);
 			setInterval(updateListings, 300000);
+			
 
 
 
