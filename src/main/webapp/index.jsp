@@ -54,8 +54,14 @@
                     	<li class="nav-item">
                             <a href="reps.jsp" class="nav-link">Representatives</a>
                         </li>
+                        <li class="nav-item">
+                            <a href="bids.jsp" class="nav-link">All Bids</a>
+                        </li>
                         <% } 
                         if (session1.getAttribute("role_id").equals(2)){%>
+                        <li class="nav-item">
+                            <a href="bids.jsp" class="nav-link">All Bids</a>
+                        </li>
                         <li class="nav-item">
                             <a href="answerquestions.jsp" class="nav-link">Answer Questions</a>
                         </li>
@@ -124,7 +130,7 @@
 						history.replaceState({}, "", "bidform.jsp");
 					}, 3000);
 				</script>
-			<% } }%>
+			<% } %>
 	
 	  <div class="container">
   <div class="d-flex justify-content-between my-3">
@@ -147,6 +153,7 @@
   </div>
   <ul id="search-results" class="list-unstyled"></ul>
 </div>
+<% } %>
 <script src="${contextPath}/resources/searchbar.js"></script>
 
 <script>
