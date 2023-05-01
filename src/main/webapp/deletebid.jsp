@@ -7,10 +7,16 @@
 <%
     int vehicleId = Integer.parseInt(request.getParameter("vehicle_id"));
     String licensePlate = request.getParameter("license_plate");
-    String redirect = "mybids.jsp";
 
     HttpSession session1 = request.getSession();
     String userId = session1.getAttribute("user").toString();
+    int roleId = Integer.parseInt(session1.getAttribute("role_id").toString());
+    String redirect = "";
+    if (roleId < 3) {
+        redirect = "bids.jsp";
+    } else {
+        redirect = "mybids.jsp";
+    }
 
     Connection connection = null;
     PreparedStatement preparedStatementBid = null;
@@ -27,12 +33,19 @@
         connection = DriverManager.getConnection(url, username, pswd);
         
         // Delete the specific bid placed by the user
-        preparedStatementBid = connection.prepareStatement("DELETE FROM Bids WHERE vehicle_id=? AND license_plate=? AND buyer_id=?");
-        preparedStatementBid.setInt(1, vehicleId);
-        preparedStatementBid.setString(2, licensePlate);
-        preparedStatementBid.setString(3, userId);
-        preparedStatementBid.executeUpdate();
-
+        if (roleId==3){
+	        preparedStatementBid = connection.prepareStatement("DELETE FROM Bids WHERE vehicle_id=? AND license_plate=? AND buyer_id=?");
+	        preparedStatementBid.setInt(1, vehicleId);
+	        preparedStatementBid.setString(2, licensePlate);
+	        preparedStatementBid.setString(3, userId);
+	        preparedStatementBid.executeUpdate();
+        } else {
+        	preparedStatementBid = connection.prepareStatement("DELETE FROM Bids WHERE vehicle_id=? AND license_plate=?");
+	        preparedStatementBid.setInt(1, vehicleId);
+	        preparedStatementBid.setString(2, licensePlate);
+	        preparedStatementBid.executeUpdate();
+        }
+		
         response.sendRedirect(redirect+"?deleted=success");
     } catch (Exception e) {
         e.printStackTrace();

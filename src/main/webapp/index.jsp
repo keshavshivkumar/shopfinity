@@ -54,8 +54,14 @@
                     	<li class="nav-item">
                             <a href="reps.jsp" class="nav-link">Representatives</a>
                         </li>
+                        <li class="nav-item">
+                            <a href="bids.jsp" class="nav-link">All Bids</a>
+                        </li>
                         <% } 
                         if (session1.getAttribute("role_id").equals(2)){%>
+                        <li class="nav-item">
+                            <a href="bids.jsp" class="nav-link">All Bids</a>
+                        </li>
                         <li class="nav-item">
                             <a href="answerquestions.jsp" class="nav-link">Answer Questions</a>
                         </li>
