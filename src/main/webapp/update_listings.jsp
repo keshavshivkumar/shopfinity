@@ -38,8 +38,34 @@ try {
 
     int rowsUpdated = preparedStatement1.executeUpdate();
     out.println("Updated rows: " + rowsUpdated);
-
+    
     preparedStatement2 = connection.prepareStatement(
+            "INSERT INTO Notifications (email_id, notification_text) " +
+            "SELECT L.buyer_id, CONCAT('You won the bid for listing with license plate: ', L.license_plate) " +
+            "FROM Listings L " +
+            "WHERE L.expiration_datetime < NOW() AND " +
+            "      L.license_plate IN (SELECT license_plate FROM Bids) AND " +
+            "      L.sold = 1 AND " +
+            "      L.final_bid IS NOT NULL AND " +
+            "      NOT EXISTS (SELECT 1 FROM Notifications N WHERE N.email_id = L.buyer_id AND N.notification_text = CONCAT('You won the bid for listing with license plate: ', L.license_plate));"
+        );
+    int rowsInsertedBuyer = preparedStatement2.executeUpdate();
+    out.println("Inserted buyer notifications: " + rowsInsertedBuyer);
+
+    preparedStatement3 = connection.prepareStatement(
+            "INSERT INTO Notifications (email_id, notification_text) " +
+            "SELECT L.seller_id, CONCAT('Your listing with license plate: ', L.license_plate, ' is sold to ', L.buyer_id) " +
+            "FROM Listings L " +
+            "WHERE L.expiration_datetime < NOW() AND " +
+            "      L.license_plate IN (SELECT license_plate FROM Bids) AND " +
+            "      L.sold = 1 AND " +
+            "      L.final_bid IS NOT NULL AND " +
+            "      NOT EXISTS (SELECT 1 FROM Notifications N WHERE N.email_id = L.seller_id AND N.notification_text = CONCAT('Your listing with license plate: ', L.license_plate, ' is sold to ', L.buyer_id));"
+        );
+    int rowsInsertedSeller = preparedStatement3.executeUpdate();
+    out.println("Inserted seller notifications: " + rowsInsertedSeller);
+
+    preparedStatement4 = connection.prepareStatement(
             "DELETE B " +
             "FROM Bids B " +
             "WHERE B.license_plate IN (SELECT L.license_plate " +
@@ -47,7 +73,7 @@ try {
             "                          WHERE L.sold = 1)"
         );
 
-    int bidsDeleted = preparedStatement2.executeUpdate();
+    int bidsDeleted = preparedStatement4.executeUpdate();
     out.println("Deleted bids: " + bidsDeleted);
 
 } catch (Exception e) {
@@ -55,6 +81,8 @@ try {
 } finally {
     if (preparedStatement1 != null) preparedStatement1.close();
     if (preparedStatement2 != null) preparedStatement2.close();
+    if (preparedStatement3 != null) preparedStatement3.close();
+    if (preparedStatement4 != null) preparedStatement4.close();
     if (connection != null) connection.close();
 }
 %>
