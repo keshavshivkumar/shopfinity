@@ -40,6 +40,9 @@
                         <li class="nav-item">
                             <a href="logout.jsp" class="nav-link">Sign Out</a>
                         </li>
+                        <li class="nav-item">
+                            <a href="allquestions.jsp" class="nav-link">All Questions</a>
+                        </li>
                     <% } else { %>
                         <li class="nav-item">
                             <a href="login.jsp" class="nav-link">Log In</a>

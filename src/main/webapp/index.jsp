@@ -74,7 +74,9 @@
                             <a href="yourquestions.jsp" class="nav-link">Your Questions</a>
                         </li>
                         <% } %>
-                        
+                        <li class="nav-item">
+                            <a href="allquestions.jsp" class="nav-link">All Questions</a>
+                        </li>
                         <li class="nav-item">
                             <a href="mylistings.jsp" class="nav-link">My Listings</a>
                         </li>

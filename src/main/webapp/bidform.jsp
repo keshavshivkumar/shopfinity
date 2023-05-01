@@ -53,6 +53,9 @@
                 <li class="nav-item">
                     <a href="sell.jsp" class="nav-link">Sell</a>
                 </li>
+                <li class="nav-item">
+                            <a href="allquestions.jsp" class="nav-link">All Questions</a>
+                        </li>
                 <% if (session1.getAttribute("role_id").equals(3)){%>
                         <li class="nav-item">
                             <a href="askquestions.jsp" class="nav-link">Ask Questions</a>
