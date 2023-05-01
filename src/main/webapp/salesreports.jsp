@@ -4,9 +4,9 @@
 <%@ page import="java.util.Properties" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
-<!DOCTYPE html>
+
 <html>
-<html> 
+
 <head>
 	<title>Index</title>
 	<link href="bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />

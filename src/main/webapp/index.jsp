@@ -68,6 +68,7 @@
                             <a href="yourquestions.jsp" class="nav-link">Your Questions</a>
                         </li>
                         <% } %>
+                        
                         <li class="nav-item">
                             <a href="mylistings.jsp" class="nav-link">My Listings</a>
                         </li>
@@ -124,7 +125,7 @@
 						history.replaceState({}, "", "bidform.jsp");
 					}, 3000);
 				</script>
-			<% } }%>
+			<% } %>
 	
 	  <div class="container">
   <div class="d-flex justify-content-between my-3">
@@ -147,6 +148,7 @@
   </div>
   <ul id="search-results" class="list-unstyled"></ul>
 </div>
+<% } %>
 <script src="${contextPath}/resources/searchbar.js"></script>
 
 <script>
