@@ -65,7 +65,8 @@
 
                 if (resultSet.next() && resultSet.getInt("highest_bid_amount") != 0) {
                     int currentBid = resultSet.getInt("highest_bid_amount");
-                    if (bidAmount > currentBid) {
+                    
+                    if (bidAmount > currentBid + minInc) {
                         String currentHighestBuyerId;
                         int currentHighestUpperLimit;
 
@@ -112,16 +113,25 @@
                                 preparedStatement.setString(5, license);
                                 preparedStatement.executeUpdate();
                                 // Delete the losing bid
+                                
                                 preparedStatement = connection.prepareStatement("DELETE FROM Bids WHERE vehicle_id=? AND buyer_id=? AND license_plate=?");
                                 preparedStatement.setInt(1, vehicleId);
                                 preparedStatement.setString(2, buyerId);
                                 preparedStatement.setString(3, license);
                                 preparedStatement.executeUpdate();
+                               
                                 redirectUrl="index.jsp?bid=success";
                             } else if (newBidForCurrentHighest == newBidForNewBidder && currentHighestUpperLimit==upperLimit){
-                            	redirectUrl="bidform.jsp?bid=repeat";
+                            	redirectUrl="index.jsp?bid=repeat";
                             } else {
-                                preparedStatement = connection.prepareStatement("INSERT INTO Bids (vehicle_id, dt, seller_id, buyer_id, upper_limit, bid_amount, license_plate) VALUES (?, ?, ?, ?, ?, ?, ?)");
+                            	
+                            	preparedStatement = connection.prepareStatement("DELETE FROM Bids WHERE vehicle_id=? AND buyer_id=? AND license_plate=?");
+                                preparedStatement.setInt(1, vehicleId);
+                                preparedStatement.setString(2, currentHighestBuyerId);
+                                preparedStatement.setString(3, license);
+                                preparedStatement.executeUpdate();
+                            	
+                            	preparedStatement = connection.prepareStatement("INSERT INTO Bids (vehicle_id, dt, seller_id, buyer_id, upper_limit, bid_amount, license_plate) VALUES (?, ?, ?, ?, ?, ?, ?)");
                                 preparedStatement.setInt(1, vehicleId);
                                 preparedStatement.setTimestamp(2, dtTimestamp);
                                 preparedStatement.setString(3, sellerId);
@@ -131,19 +141,21 @@
                                 preparedStatement.setString(7, license);
                                 preparedStatement.executeUpdate();
                                 // Delete the losing bid
-                                preparedStatement = connection.prepareStatement("DELETE FROM Bids WHERE vehicle_id=? AND buyer_id=? AND license_plate=?");
-                                preparedStatement.setInt(1, vehicleId);
-                                preparedStatement.setString(2, currentHighestBuyerId);
-                                preparedStatement.setString(3, license);
-                                preparedStatement.executeUpdate();
+                                
+                                
+                                 
                                 redirectUrl="index.jsp?bid=success";
                             }
                         }
+                    }
+                    else{
+                    	redirectUrl="index.jsp?bid=failure";
                     }
                 }
 
                 else {
                     // Insert the bid into the Bids table when there is no existing highest bid
+                    
                     preparedStatement = connection.prepareStatement("INSERT INTO Bids (vehicle_id, dt, seller_id, buyer_id, upper_limit, bid_amount, license_plate) VALUES (?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
                     preparedStatement.setInt(1, vehicleId);
                     preparedStatement.setTimestamp(2, dtTimestamp);
@@ -157,7 +169,7 @@
                 }
                 
             } else {
-            	redirectUrl="bidform.jsp?bid=failure";
+            	redirectUrl="index.jsp?bid=failure";
             }
             response.sendRedirect(redirectUrl);
         }

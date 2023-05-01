@@ -108,19 +108,47 @@
 			}, 3000);
 		</script>
 	<% } %>
+	<% if ("repeat".equals(request.getParameter("bid"))) { %>
+			<p id="success-message" style="color: red;">Your bid amount/upper limit is already used!</p>
+				<script>
+					setTimeout(function() {
+						document.getElementById("success-message").style.display = "none";
+						history.replaceState({}, "", "bidform.jsp");
+					}, 3000);
+				</script>
+			<% } else if ("failure".equals(request.getParameter("bid"))) {%>
+			<p id="success-message" style="color: red;">Bid failed, your bid is too low</p>
+				<script>
+					setTimeout(function() {
+						document.getElementById("success-message").style.display = "none";
+						history.replaceState({}, "", "bidform.jsp");
+					}, 3000);
+				</script>
+			<% } }%>
+	
 	  <div class="container">
-			<div class="d-flex justify-content-center my-3">
-				<a href="listings.jsp" class="btn btn-primary">Browse All Listings</a>
-			</div>
-	  	<div class="input-group my-3">
-	      <input type="text" id="search-input" class="form-control" placeholder="Search..." onkeyup="searchFunction()">
-	      <button class="btn btn-primary" type="button">Search</button>
-	    </div>
-	    <ul id="search-results" class="list-unstyled"></ul>
-	  </div>
-	<% } %>
-<script src="${contextPath}/resources/searchbar.js">
-</script>
+  <div class="d-flex justify-content-between my-3">
+    <a href="listings.jsp" class="btn btn-primary">Browse All Listings</a>
+    <select id="sort-select" class="form-select" onchange="searchFunction()">
+      <option value="" selected>Sort by...</option>
+      <option value="listing_price">Listing Price</option>
+      <option value="bid_amount">Bid Amount</option>
+      <option value="vehicle_name">Vehicle Name</option>
+      <option value="vehicle_type">Vehicle Type</option>
+      <option value="vehicle_model">Vehicle Model</option>
+      <option value="time_left">Time left</option>
+      <option value="seller_id">Seller Name</option>
+      <!-- Add more options here for other fields -->
+    </select>
+  </div>
+  <div class="input-group my-3">
+    <input type="text" id="search-input" class="form-control" placeholder="Search..." onkeyup="searchFunction()">
+    <button class="btn btn-primary" type="button">Search</button>
+  </div>
+  <ul id="search-results" class="list-unstyled"></ul>
+</div>
+<script src="${contextPath}/resources/searchbar.js"></script>
+
 <script>
 
 			function updateListings() {

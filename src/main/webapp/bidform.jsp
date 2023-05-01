@@ -91,23 +91,7 @@
             <h2 class="text-center mt-4 mb-3">Bid Form</h2>
 
             <% if (session.getAttribute("loggedIn") != null && (Boolean) session.getAttribute("loggedIn")) { %>
-            <% if ("repeat".equals(request.getParameter("bid"))) { %>
-			<p id="success-message" style="color: red;">Your bid amount/upper limit is already used!</p>
-				<script>
-					setTimeout(function() {
-						document.getElementById("success-message").style.display = "none";
-						history.replaceState({}, "", "bidform.jsp");
-					}, 3000);
-				</script>
-			<% } else if ("failure".equals(request.getParameter("bid"))) {%>
-			<p id="success-message" style="color: red;">Bid failed!</p>
-				<script>
-					setTimeout(function() {
-						document.getElementById("success-message").style.display = "none";
-						history.replaceState({}, "", "bidform.jsp");
-					}, 3000);
-				</script>
-			<% } %>
+            
             <form action="submitbid.jsp" method="POST">
                 <input type="hidden" name="vehicle_id" value="${param.vehicle_id}">
                 <input type="hidden" name="license_plate" value="${param.license_plate}">

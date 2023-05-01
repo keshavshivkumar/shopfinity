@@ -12,6 +12,7 @@
 
     try {
         String query = request.getParameter("query");
+        String sortBy = request.getParameter("sortBy");
         if (query == null || query.isEmpty()) {
             return;
         }
@@ -25,9 +26,25 @@
         String pswd = props.getProperty("db.password");
         Class.forName("com.mysql.jdbc.Driver");
         Connection con = DriverManager.getConnection(url, username, pswd);
+		
+        // Add the sorting clause to your SQL query
+        String orderByClause = "";
+        if (sortBy != null && !sortBy.isEmpty()) {
+            orderByClause = "ORDER BY " + sortBy;
+        }
 
-        PreparedStatement stmt = con.prepareStatement("SELECT v.vehicle_id, v.vehicle_name, v.vehicle_model, v.vehicle_type, l.seller_id, l.license_plate, l.dt, e.full_name, l.listing_price, l.dt, CONCAT(TIMESTAMPDIFF(HOUR, NOW(), l.expiration_datetime), 'h ', TIMESTAMPDIFF(MINUTE, NOW(), l.expiration_datetime) % 60, 'm ', TIMESTAMPDIFF(SECOND, NOW(), l.expiration_datetime) % 60, 's') AS time_left, COALESCE(b.bid_amount, NULL) as bid_amount, l.calc_sold AS sold, l.calc_buyer_id AS buyer_id FROM (SELECT *, (CASE WHEN expiration_datetime < NOW() AND license_plate IN (SELECT license_plate FROM Bids) THEN 1 ELSE 0 END) AS calc_sold, (SELECT buyer_id FROM Bids WHERE license_plate = Listings.license_plate ORDER BY bid_amount DESC, dt DESC LIMIT 1) AS calc_buyer_id FROM Listings) l INNER JOIN Vehicles v ON l.vehicle_id = v.vehicle_id JOIN EndUsers e ON l.seller_id = e.email_id LEFT JOIN Bids b ON l.vehicle_id = b.vehicle_id AND l.license_plate = b.license_plate WHERE v.vehicle_name LIKE ? AND l.expiration_datetime > NOW()");
+        // Add the orderByClause to your SQL query string
+        String sql = "SELECT v.vehicle_id, v.vehicle_name, v.vehicle_model, v.vehicle_type, l.seller_id, l.license_plate, l.dt, e.full_name, l.listing_price, l.dt, CONCAT(TIMESTAMPDIFF(HOUR, NOW(), l.expiration_datetime), 'h ', TIMESTAMPDIFF(MINUTE, NOW(), l.expiration_datetime) % 60, 'm ', TIMESTAMPDIFF(SECOND, NOW(), l.expiration_datetime) % 60, 's') AS time_left, COALESCE(b.bid_amount, NULL) as bid_amount, l.calc_sold AS sold, l.calc_buyer_id AS buyer_id FROM (SELECT *, (CASE WHEN expiration_datetime < NOW() AND license_plate IN (SELECT license_plate FROM Bids) THEN 1 ELSE 0 END) AS calc_sold, (SELECT buyer_id FROM Bids WHERE license_plate = Listings.license_plate ORDER BY bid_amount DESC, dt DESC LIMIT 1) AS calc_buyer_id FROM Listings) l INNER JOIN Vehicles v ON l.vehicle_id = v.vehicle_id JOIN EndUsers e ON l.seller_id = e.email_id LEFT JOIN Bids b ON l.vehicle_id = b.vehicle_id AND l.license_plate = b.license_plate WHERE (v.vehicle_name LIKE ? OR v.vehicle_model LIKE ? OR v.vehicle_type LIKE ? OR l.seller_id LIKE ? OR l.license_plate LIKE ? OR e.full_name LIKE ?) AND l.expiration_datetime > NOW() " + orderByClause;
+
+        //PreparedStatement stmt = con.prepareStatement("SELECT v.vehicle_id, v.vehicle_name, v.vehicle_model, v.vehicle_type, l.seller_id, l.license_plate, l.dt, e.full_name, l.listing_price, l.dt, CONCAT(TIMESTAMPDIFF(HOUR, NOW(), l.expiration_datetime), 'h ', TIMESTAMPDIFF(MINUTE, NOW(), l.expiration_datetime) % 60, 'm ', TIMESTAMPDIFF(SECOND, NOW(), l.expiration_datetime) % 60, 's') AS time_left, COALESCE(b.bid_amount, NULL) as bid_amount, l.calc_sold AS sold, l.calc_buyer_id AS buyer_id FROM (SELECT *, (CASE WHEN expiration_datetime < NOW() AND license_plate IN (SELECT license_plate FROM Bids) THEN 1 ELSE 0 END) AS calc_sold, (SELECT buyer_id FROM Bids WHERE license_plate = Listings.license_plate ORDER BY bid_amount DESC, dt DESC LIMIT 1) AS calc_buyer_id FROM Listings) l INNER JOIN Vehicles v ON l.vehicle_id = v.vehicle_id JOIN EndUsers e ON l.seller_id = e.email_id LEFT JOIN Bids b ON l.vehicle_id = b.vehicle_id AND l.license_plate = b.license_plate WHERE (v.vehicle_name LIKE ? OR v.vehicle_model LIKE ? OR v.vehicle_type LIKE ? OR l.seller_id LIKE ? OR l.license_plate LIKE ? OR e.full_name LIKE ?) AND l.expiration_datetime > NOW()");
+        PreparedStatement stmt = con.prepareStatement(sql);
         stmt.setString(1, "%" + query + "%");
+        stmt.setString(2, "%" + query + "%");
+        stmt.setString(3, "%" + query + "%");
+        stmt.setString(4, "%" + query + "%");
+        stmt.setString(5, "%" + query + "%");
+        stmt.setString(6, "%" + query + "%");
+        
 
         ResultSet rs = stmt.executeQuery();
 
