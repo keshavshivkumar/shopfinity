@@ -69,6 +69,9 @@
                             <a href="notifications.jsp" class="nav-link">Notifications</a>
                         </li>
                         <li class="nav-item">
+                            <a href="wishlist.jsp" class="nav-link">Wishlist</a>
+                        </li>
+                        <li class="nav-item">
                             <a href="logout.jsp" class="nav-link">Sign Out</a>
                         </li>
                     <% } else { %>

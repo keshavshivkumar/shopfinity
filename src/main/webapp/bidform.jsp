@@ -50,12 +50,8 @@
         </div>
         <nav class="navbar-nav ms-auto">
             <% if (session1.getAttribute("loggedIn") != null && (Boolean) session1.getAttribute("loggedIn")) { %>
-                <li class="nav-item">
-                    <a href="sell.jsp" class="nav-link">Sell</a>
-                </li>
-                <li class="nav-item">
-                            <a href="allquestions.jsp" class="nav-link">All Questions</a>
-                        </li>
+                
+                
                 <% if (session1.getAttribute("role_id").equals(3)){%>
                         <li class="nav-item">
                             <a href="askquestions.jsp" class="nav-link">Ask Questions</a>
@@ -65,11 +61,23 @@
                         </li>
                         <% } %>
                 <li class="nav-item">
+                            <a href="allquestions.jsp" class="nav-link">All Questions</a>
+                        </li>
+                <li class="nav-item">
                      <a href="mylistings.jsp" class="nav-link">My Listings</a>
                 </li>
                 <li class="nav-item">
                     <a href="mybids.jsp" class="nav-link">My Bids</a>
                 </li>
+                <li class="nav-item">
+                    <a href="sell.jsp" class="nav-link">Sell</a>
+                </li>
+                <li class="nav-item">
+                            <a href="notifications.jsp" class="nav-link">Notifications</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="wishlist.jsp" class="nav-link">Wishlist</a>
+                        </li>
                 <li class="nav-item">
                     <a href="logout.jsp" class="nav-link">Sign Out</a>
                 </li>

@@ -81,6 +81,24 @@
         insertListingStatement.setTimestamp(6, expirationTimestamp);
         insertListingStatement.setString(7, licensePlate);
         insertListingStatement.executeUpdate();
+        
+        
+        String buyersQuery = "SELECT email_id FROM Wishlists WHERE vehicle_id = ? AND email_id <> ?";
+        PreparedStatement buyersStatement = con.prepareStatement(buyersQuery);
+        buyersStatement.setInt(1, vehicleId);
+        buyersStatement.setString(2, seller_id);
+        ResultSet buyersResultSet = buyersStatement.executeQuery();
+
+        String notificationText = "A vehicle you have in your wishlist is now available for bidding: " + vehicleName + " " + vehicleModel + " (" + vehicleType + ").";
+        String insertNotificationQuery = "INSERT INTO Notifications (email_id, notification_text) VALUES (?, ?)";
+        PreparedStatement insertNotificationStatement = con.prepareStatement(insertNotificationQuery);
+
+        while (buyersResultSet.next()) {
+            String buyerEmail = buyersResultSet.getString("email_id");
+            insertNotificationStatement.setString(1, buyerEmail);
+            insertNotificationStatement.setString(2, notificationText);
+            insertNotificationStatement.executeUpdate();
+        }
 
         response.sendRedirect("sell.jsp?listed=success");
         con.close();

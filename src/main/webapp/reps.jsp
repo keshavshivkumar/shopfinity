@@ -43,6 +43,12 @@
                         <li class="nav-item">
                             <a href="allquestions.jsp" class="nav-link">All Questions</a>
                         </li>
+                        <li class="nav-item">
+                            <a href="notifications.jsp" class="nav-link">Notification</a>
+                        </li>
+                		<li class="nav-item">
+                            <a href="wishlist.jsp" class="nav-link">Wishlist</a>
+                        </li>
                     <% } else { %>
                         <li class="nav-item">
                             <a href="login.jsp" class="nav-link">Log In</a>

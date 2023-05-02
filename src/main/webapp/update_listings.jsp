@@ -6,6 +6,8 @@
 Connection connection = null;
 PreparedStatement preparedStatement1 = null;
 PreparedStatement preparedStatement2 = null;
+PreparedStatement preparedStatement3 = null;
+PreparedStatement preparedStatement4 = null;
 
 try {
     Class.forName("com.mysql.jdbc.Driver");

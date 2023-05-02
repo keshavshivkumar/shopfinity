@@ -23,7 +23,6 @@
 	    userEmail = session1.getAttribute("user").toString();
 	}
 
-
     Connection connection = null;
     PreparedStatement preparedStatement = null;
     ResultSet resultSet = null;
@@ -80,7 +79,7 @@
                             <a href="sell.jsp" class="nav-link">Sell</a>
                         </li>
                         <li class="nav-item">
-                            <a href="wishlist.jsp" class="nav-link">Wishlist</a>
+                            <a href="notifications.jsp" class="nav-link">Notifications</a>
                         </li>
                         <li class="nav-item">
                             <a href="logout.jsp" class="nav-link">Sign Out</a>
@@ -95,20 +94,23 @@
         </div>
     </header>
     <% if (session1.getAttribute("loggedIn") != null && (Boolean) session1.getAttribute("loggedIn")) { %>
-    <main class="container my-4">
-    <h2 class="mb-3">All Notifications</h2>
-    <div class="table-responsive">
-        <table class="table table-striped" id="notifications-table">
-            <thead>
-                <tr>
-                    <th scope="col" onclick="loadSortedNotifications('notification_id', 'asc')">Notification ID</th>
-                    <th scope="col" onclick="loadSortedNotifications('email_id', 'asc')">User Email</th>
-                    <th scope="col" onclick="loadSortedNotifications('notification_text', 'asc')">Notification Text</th>
-                    <th scope="col" onclick="loadSortedNotifications('timestamp_pushed', 'asc')">Timestamp</th>
-                </tr>
-            </thead>
-            <tbody>
-                <%
+    <div class="container mt-4">
+    <h2>Browse Vehicles</h2>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Vehicle ID</th>
+                <th>Vehicle Name</th>
+                <th>Vehicle Model</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            <%
+                
+
+                try {
+                    Class.forName("com.mysql.jdbc.Driver");
                     Properties props = new Properties();
                     FileInputStream in = new FileInputStream(getServletContext().getRealPath("/resources/database.properties"));
                     props.load(in);
@@ -116,49 +118,40 @@
                     String url = props.getProperty("db.url");
                     String username = props.getProperty("db.username");
                     String pswd = props.getProperty("db.password");
-                    Class.forName("com.mysql.jdbc.Driver");
                     connection = DriverManager.getConnection(url, username, pswd);
-
-                    String sortField = request.getParameter("sortField") != null ? request.getParameter("sortField") : "notification_id";
-                    String sortDirection = request.getParameter("sortDirection") != null ? request.getParameter("sortDirection") : "asc";
-
-                    String query = "SELECT * FROM Notifications WHERE email_id = ? ORDER BY " + sortField + " " + sortDirection;
-                    preparedStatement = connection.prepareStatement(query);
-                    preparedStatement.setString(1, userEmail);
+                    preparedStatement = connection.prepareStatement("SELECT V.vehicle_id, V.vehicle_name, V.vehicle_model FROM Vehicles AS V LEFT JOIN Listings AS L ON V.vehicle_id = L.vehicle_id WHERE L.vehicle_id IS NULL");
                     resultSet = preparedStatement.executeQuery();
 
-                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-
                     while (resultSet.next()) {
-                %>
-                <tr>
-                    <th scope="row"><%= resultSet.getInt("notification_id") %></th>
-                    <td><%= resultSet.getString("email_id") %></td>
-                    <td><%= resultSet.getString("notification_text") %></td>
-                    <td><%= sdf.format(resultSet.getTimestamp("timestamp_pushed")) %></td>
-                </tr>
-                <% } %>
-            </tbody>
-        </table>
-        <form id="sortForm" method="get" style="display:none;">
-            <input type="hidden" id="sortField" name="sortField" value="">
-            <input type="hidden" id="sortDirection" name="sortDirection" value="">
-        </form>
-        <% } else { %>
+            %>
+            <tr>
+                <td><%= resultSet.getInt("vehicle_id") %></td>
+                <td><%= resultSet.getString("vehicle_name") %></td>
+                <td><%= resultSet.getString("vehicle_model") %></td>
+                <td>
+                    <form action="addToWishlist.jsp" method="POST">
+                        <input type="hidden" name="vehicle_id" value="<%= resultSet.getInt("vehicle_id") %>">
+                        <button type="submit" class="btn btn-primary">Add to Wishlist</button>
+                    </form>
+                </td>
+            </tr>
+            <%
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                } finally {
+                    if (resultSet != null) resultSet.close();
+                    if (preparedStatement != null) preparedStatement.close();
+                    if (connection != null) connection.close();
+                }
+            %>
+        </tbody>
+    </table>
+</div>
+<% } else { %>
         <div class="row">
             <div class="col-md-12 text-center mt-4">
-                <div class="alert alert-warning">You first need to log in to view your notifications!</div>
+                <div class="alert alert-warning">You first need to log in to view all the questions!</div>
             </div>
         </div>
     <% } %>
-    </div>
-</main>
-<script>
-    function loadSortedNotifications(sortField, sortDirection) {
-        document.getElementById("sortField").value = sortField;
-        document.getElementById("sortDirection").value = sortDirection;
-        document.getElementById("sortForm").submit();
-    }
-</script>
-</body>
-</html>

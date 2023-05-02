@@ -44,14 +44,18 @@
                 <ul class="navbar-nav ms-auto">
                     <% if (session1.getAttribute("loggedIn") != null && (Boolean) session1.getAttribute("loggedIn")) { 
                     	if (session1.getAttribute("role_id").equals(1)){%>
-                    	<li class="nav-item">
-                            <a href="salesreports.jsp" class="nav-link">Reports</a>
-                        </li>
+                    	
                     	<li class="nav-item">
                             <a href="reps.jsp" class="nav-link">Representatives</a>
                         </li>
-                        <% } 
-                        if (session1.getAttribute("role_id").equals(2)){%>
+                        <li class="nav-item">
+                            <a href="bids.jsp" class="nav-link">All Bids</a>
+                        </li>
+                        <% } %>
+                        <li class="nav-item">
+                            <a href="allquestions.jsp" class="nav-link">All Questions</a>
+                        </li>
+                      <%   if (session1.getAttribute("role_id").equals(2)){%>
                         <li class="nav-item">
                             <a href="answerquestions.jsp" class="nav-link">Answer Questions</a>
                         </li>
@@ -64,9 +68,7 @@
                             <a href="yourquestions.jsp" class="nav-link">Your Questions</a>
                         </li>
                         <% } %>
-                        <li class="nav-item">
-                            <a href="allquestions.jsp" class="nav-link">All Questions</a>
-                        </li>
+                        
                         <li class="nav-item">
                             <a href="mylistings.jsp" class="nav-link">My Listings</a>
                         </li>
@@ -75,6 +77,12 @@
                         </li>
                         <li class="nav-item">
                             <a href="sell.jsp" class="nav-link">Sell</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="notifications.jsp" class="nav-link">Notification</a>
+                        </li>
+                		<li class="nav-item">
+                            <a href="wishlist.jsp" class="nav-link">Wishlist</a>
                         </li>
                         <li class="nav-item">
                             <a href="logout.jsp" class="nav-link">Sign Out</a>
